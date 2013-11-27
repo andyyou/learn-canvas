@@ -58,6 +58,7 @@
         <script src="js/bootstrap.min.js"></script>
         <script src='js/kinetic-v4.7.3.min.js'></script>
         <script>
+
         var stage = new Kinetic.Stage({
           container: 'container',
           width: 480,
@@ -65,6 +66,7 @@
         });
 
         var layer = new Kinetic.Layer();
+        var layerTooltip = new Kinetic.Layer();
 
         var arena = new Kinetic.Rect({
           x: 2,
@@ -86,8 +88,34 @@
         txtArena.setOffset({
           x: txtArena.getWidth()/2
         });
+        layer.add(arena);
+        layer.add(txtArena);
+
+
+        var tooltip = new Kinetic.Label({
+          opacity: 0.75,
+          visible: false,
+          listening: false
+        });
+        tooltip.add(new Kinetic.Tag({
+          fill: 'black',
+          pointerDirection: 'down',
+          pointerWidth: 10,
+          pointerHeight: 10,
+          lineJoin: 'round',
+          shadowOpacity: 0.5
+        }));
+        tooltip.add(new Kinetic.Text({
+          text: '',
+          fontFamily: 'Calibri',
+          fontSize: 13,
+          padding: 5,
+          fill: 'white'
+        }));
+        layerTooltip.add(tooltip);
 
         // initialize seats
+        
         var seats = [
           {x:144, y:19, id: '10-1',   sold: false, price: 100, name: '劉德華-一般票'},
           {x:162, y:19, id: '10-2',   sold: false, price: 100, name: '劉德華-一般票'},
@@ -303,59 +331,38 @@
             checked: false      // only for frontend
           });
 
-          seat.on('mouseover', function(){
+          seat.on('mouseover mousemove', function(evt){
             // add tooltip
             if (!this.attrs.sold) {
-              var tooltip = new Kinetic.Label({
-                x: this.attrs.x,
-                y: this.attrs.y - 5,
-                opacity: 0.75
-              });
+              tooltip.setPosition(this.attrs.x, this.attrs.y - 5);
+              tooltip.getText().setText(
+                                          this.attrs.id + 
+                                          '\n' + this.attrs.name + 
+                                          '\nNTD ' + this.attrs.price);
+              tooltip.show();
+              layerTooltip.batchDraw();
 
-              tooltip.add(new Kinetic.Tag({
-                fill: 'black',
-                pointerDirection: 'down',
-                pointerWidth: 10,
-                pointerHeight: 10,
-                lineJoin: 'round',
-                shadowOpacity: 0.5
-              }));
-
-              tooltip.add(new Kinetic.Text({
-                text: this.attrs.id + 
-                      '\n' + this.attrs.name + 
-                      '\nNTD ' + this.attrs.price,
-                fontFamily: 'Calibri',
-                fontSize: 13,
-                padding: 5,
-                fill: 'white'
-              }));
-              layer.add(tooltip);
-
-              // effect
-              if (!this.attrs.checked) 
+              if (!this.attrs.checked) {
                 this.attrs.fill = 'rgba(11, 255, 114, 1)';
-  
-              // bind event
-              this.on('mouseout', function() {
-                tooltip.remove();
-                if (!this.attrs.checked) {
-                  this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
-                  this.attrs.stroke = null;
-                }
-                layer.draw();
-              });
-  
-              
-              layer.batchDraw();
-            } // </if (!this.attrs.sold)>
-            
+                layer.batchDraw();
+              }
+            } // end if (!this.attrs.sold)            
           });
-          
+
+          seat.on('mouseout', function() {
+            tooltip.hide(); 
+            layerTooltip.draw();
+
+            if (!this.attrs.sold && !this.attrs.checked) {
+              this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
+              this.attrs.stroke = null;
+              layer.batchDraw();
+            }
+          });
+
           seat.on('mouseup', function() {
             if (!this.attrs.sold ){
               if (!this.attrs.checked && tickets.length < 10) {
-               
                 this.attrs.fill = 'rgba(226, 37, 25, 1)';
                 this.attrs.stroke = '#333'
                 this.attrs.checked = true;
@@ -365,28 +372,29 @@
                   name: this.attrs.name,
                   price: this.attrs.price
                 });
-                console.log(tickets);
               } else {
                 this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
                 this.attrs.stroke = null;
                 this.attrs.checked = false;
                 // remove ticket from cart
-                for (var i=0; i < tickets.length; i++)
-                  if (tickets[i]['id'] == this.attrs.id)
-                    tickets.splice(tickets[i], 1);
+                for (var i=0; i < tickets.length; i++){
+                  if (tickets[i]['id'] === this.attrs.id)
+                  {
+                    tickets.splice(i, 1);
+                  }  
+                }
+                  
               }
+              layer.draw();
             }
-            layer.draw();
           });
 
-          layer.add(seat);
-          layer.draw();
+          layer.add(seat); // done, add seat to layer
         }
         
-
-        layer.add(arena);
-        layer.add(txtArena);
+        // render to stage
         stage.add(layer);
+        stage.add(layerTooltip);
   
 
         
