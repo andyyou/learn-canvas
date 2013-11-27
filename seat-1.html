@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+        body{
+          padding-top: 60px;
+        }
+
+        </style>
+        <script src="js/modernizr.min.js"></script>
+        <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>-->
+        <!--<script src="js/angular.min.js"></script>-->        
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">ICE</a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="#about">About</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div><!--/.navbar -->
+
+        <div class="container">
+          <h1>Hello, Grunt-init ICE</h1>
+          <div id="container"></div>
+        </div>
+
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src='js/kinetic-v4.7.3.min.js'></script>
+        <script>
+        var stage = new Kinetic.Stage({
+          container: 'container',
+          width: 480,
+          height: 320
+        });
+
+        var layer = new Kinetic.Layer();
+
+        var arena = new Kinetic.Rect({
+          x: 2,
+          y: stage.getHeight()/3*2+30,
+          width: 446,
+          height: stage.getHeight()/3 - 30,
+          fill: 'rgba(255, 200, 200, 0.8)',
+          cornerRadius: 5
+        });
+
+        var txtArena = new Kinetic.Text({
+          x: stage.getWidth()/2,
+          y: stage.getHeight()/3*2 + 50,
+          text: '舞台區域',
+          fontSize: 20,
+          fill: 'rgba(255, 150, 150, 1)'
+        });
+        // align label
+        txtArena.setOffset({
+          x: txtArena.getWidth()/2
+        });
+
+        // initialize seats
+        var seats = [
+          {x:144, y:19, id: '10-1',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:162, y:19, id: '10-2',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:180, y:19, id: '10-3',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:198, y:19, id: '10-4',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:216, y:19, id: '10-5',   sold: true,  price: 100, name: '劉德華-一般票'},
+          {x:234, y:19, id: '10-6',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:19, id: '10-7',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:19, id: '10-8',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:19, id: '10-9',   sold: true,  price: 100, name: '劉德華-一般票'},
+          {x:306, y:19, id: '10-10',  sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:37, id: '9-1',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:36,  y:37, id: '9-2',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:54,  y:37, id: '9-3',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:72,  y:37, id: '9-4',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:90,  y:37, id: '9-5',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:144, y:37, id: '9-6',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:162, y:37, id: '9-7',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:180, y:37, id: '9-8',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:198, y:37, id: '9-9',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:216, y:37, id: '9-10',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:234, y:37, id: '9-11',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:37, id: '9-12',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:37, id: '9-13',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:37, id: '9-14',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:306, y:37, id: '9-15',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:360, y:37, id: '9-17',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:378, y:37, id: '9-18',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:396, y:37, id: '9-19',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:414, y:37, id: '9-20',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:432, y:37, id: '9-21',   sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:55, id: '8-1',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:36,  y:55, id: '8-2',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:54,  y:55, id: '8-3',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:72,  y:55, id: '8-4',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:90,  y:55, id: '8-5',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:144, y:55, id: '8-6',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:162, y:55, id: '8-7',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:180, y:55, id: '8-8',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:198, y:55, id: '8-9',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:216, y:55, id: '8-10',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:234, y:55, id: '8-11',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:55, id: '8-12',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:55, id: '8-13',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:55, id: '8-14',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:306, y:55, id: '8-15',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:360, y:55, id: '8-17',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:378, y:55, id: '8-18',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:396, y:55, id: '8-19',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:414, y:55, id: '8-20',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:432, y:55, id: '8-21',   sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:73, id: '7-1',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:36,  y:73, id: '7-2',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:54,  y:73, id: '7-3',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:72,  y:73, id: '7-4',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:90,  y:73, id: '7-5',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:144, y:73, id: '7-6',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:162, y:73, id: '7-7',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:180, y:73, id: '7-8',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:198, y:73, id: '7-9',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:216, y:73, id: '7-10',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:234, y:73, id: '7-11',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:73, id: '7-12',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:73, id: '7-13',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:73, id: '7-14',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:306, y:73, id: '7-15',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:360, y:73, id: '7-17',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:378, y:73, id: '7-18',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:396, y:73, id: '7-19',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:414, y:73, id: '7-20',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:432, y:73, id: '7-21',   sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:91, id: '6-1',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:36,  y:91, id: '6-2',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:54,  y:91, id: '6-3',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:72,  y:91, id: '6-4',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:90,  y:91, id: '6-5',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:144, y:91, id: '6-6',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:162, y:91, id: '6-7',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:180, y:91, id: '6-8',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:198, y:91, id: '6-9',    sold: false, price: 100, name: '劉德華-一般票'},
+          {x:216, y:91, id: '6-10',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:234, y:91, id: '6-11',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:91, id: '6-12',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:91, id: '6-13',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:91, id: '6-14',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:306, y:91, id: '6-15',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:360, y:91, id: '6-17',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:378, y:91, id: '6-18',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:396, y:91, id: '6-19',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:414, y:91, id: '6-20',   sold: false, price: 100, name: '劉德華-一般票'},
+          {x:432, y:91, id: '6-21',   sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:109, id: '5-1',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:36,  y:109, id: '5-2',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:54,  y:109, id: '5-3',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:72,  y:109, id: '5-4',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:90,  y:109, id: '5-5',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:144, y:109, id: '5-6',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:162, y:109, id: '5-7',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:180, y:109, id: '5-8',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:198, y:109, id: '5-9',   sold: false,  price: 100, name: '劉德華-一般票'},
+          {x:216, y:109, id: '5-10',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:234, y:109, id: '5-11',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:252, y:109, id: '5-12',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:270, y:109, id: '5-13',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:288, y:109, id: '5-14',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:306, y:109, id: '5-15',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:360, y:109, id: '5-17',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:378, y:109, id: '5-18',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:396, y:109, id: '5-19',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:414, y:109, id: '5-20',  sold: false, price: 100, name: '劉德華-一般票'},
+          {x:432, y:109, id: '5-21',  sold: false, price: 100, name: '劉德華-一般票'},
+
+          {x:18,  y:127, id: '4-1',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:36,  y:127, id: '4-2',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:54,  y:127, id: '4-3',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:72,  y:127, id: '4-4',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:90,  y:127, id: '4-5',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:144, y:127, id: '4-6',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:162, y:127, id: '4-7',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:180, y:127, id: '4-8',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:198, y:127, id: '4-9',   sold: false, price: 100, name: '劉德華-VIP'},
+          {x:216, y:127, id: '4-10',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:234, y:127, id: '4-11',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:252, y:127, id: '4-12',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:270, y:127, id: '4-13',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:288, y:127, id: '4-14',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:306, y:127, id: '4-15',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:360, y:127, id: '4-17',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:378, y:127, id: '4-18',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:396, y:127, id: '4-19',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:414, y:127, id: '4-20',  sold: false, price: 100, name: '劉德華-VIP'},
+          {x:432, y:127, id: '4-21',  sold: false, price: 100, name: '劉德華-VIP'},
+
+          {x:18,  y:145, id: '3-1',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:36,  y:145, id: '3-2',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:54,  y:145, id: '3-3',   sold: true, price: 700, name: '劉德華-VIP'},
+          {x:72,  y:145, id: '3-4',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:90,  y:145, id: '3-5',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:144, y:145, id: '3-6',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:162, y:145, id: '3-7',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:180, y:145, id: '3-8',   sold: true, price: 700, name: '劉德華-VIP'},
+          {x:198, y:145, id: '3-9',   sold: false, price: 700, name: '劉德華-VIP'},
+          {x:216, y:145, id: '3-10',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:234, y:145, id: '3-11',  sold: true, price: 700, name: '劉德華-VIP'},
+          {x:252, y:145, id: '3-12',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:270, y:145, id: '3-13',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:288, y:145, id: '3-14',  sold: true, price: 700, name: '劉德華-VIP'},
+          {x:306, y:145, id: '3-15',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:360, y:145, id: '3-17',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:378, y:145, id: '3-18',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:396, y:145, id: '3-19',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:414, y:145, id: '3-20',  sold: false, price: 700, name: '劉德華-VIP'},
+          {x:432, y:145, id: '3-21',  sold: false, price: 700, name: '劉德華-VIP'},
+
+          {x:18,  y:163, id: '2-1',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:36,  y:163, id: '2-2',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:54,  y:163, id: '2-3',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:72,  y:163, id: '2-4',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:90,  y:163, id: '2-5',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:144, y:163, id: '2-6',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:162, y:163, id: '2-7',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:180, y:163, id: '2-8',   sold: true, price: 800, name: '劉德華-VIP'},
+          {x:198, y:163, id: '2-9',   sold: false, price: 800, name: '劉德華-VIP'},
+          {x:216, y:163, id: '2-10',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:234, y:163, id: '2-11',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:252, y:163, id: '2-12',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:270, y:163, id: '2-13',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:288, y:163, id: '2-14',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:306, y:163, id: '2-15',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:360, y:163, id: '2-17',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:378, y:163, id: '2-18',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:396, y:163, id: '2-19',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:414, y:163, id: '2-20',  sold: false, price: 800, name: '劉德華-VIP'},
+          {x:432, y:163, id: '2-21',  sold: false, price: 800, name: '劉德華-VIP'},
+
+          {x:18,  y:181, id: '1-1',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:36,  y:181, id: '1-2',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:54,  y:181, id: '1-3',   sold: true, price: 900, name: '劉德華-VIP'},
+          {x:72,  y:181, id: '1-4',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:90,  y:181, id: '1-5',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:144, y:181, id: '1-6',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:162, y:181, id: '1-7',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:180, y:181, id: '1-8',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:198, y:181, id: '1-9',   sold: false, price: 900, name: '劉德華-VIP'},
+          {x:216, y:181, id: '1-10',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:234, y:181, id: '1-11',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:252, y:181, id: '1-12',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:270, y:181, id: '1-13',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:288, y:181, id: '1-14',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:306, y:181, id: '1-15',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:360, y:181, id: '1-17',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:378, y:181, id: '1-18',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:396, y:181, id: '1-19',  sold: false, price: 900, name: '劉德華-VIP'},
+          {x:414, y:181, id: '1-20',  sold: true, price: 900, name: '劉德華-VIP'},
+          {x:432, y:181, id: '1-21',  sold: false, price: 900, name: '劉德華-VIP'}
+        ];
+        var tickets = [];
+        for (var i=0; i<seats.length; i++) {
+          var seat = new Kinetic.Circle({
+            id: seats[i].id,
+            name: seats[i].name,
+            sold: seats[i].sold,
+            price: seats[i].price,
+            x: seats[i].x,
+            y: seats[i].y + 25, // offset y coordinate
+            radius: 6,
+            fill: (seats[i].sold) ? 'rgba(100, 100, 100, 0.2)' : 'rgba(11, 182, 114, 0.8)',
+            checked: false      // only for frontend
+          });
+
+          seat.on('mouseover', function(){
+            // add tooltip
+            if (!this.attrs.sold) {
+              var tooltip = new Kinetic.Label({
+                x: this.attrs.x,
+                y: this.attrs.y - 5,
+                opacity: 0.75
+              });
+
+              tooltip.add(new Kinetic.Tag({
+                fill: 'black',
+                pointerDirection: 'down',
+                pointerWidth: 10,
+                pointerHeight: 10,
+                lineJoin: 'round',
+                shadowOpacity: 0.5
+              }));
+
+              tooltip.add(new Kinetic.Text({
+                text: this.attrs.id + 
+                      '\n' + this.attrs.name + 
+                      '\nNTD ' + this.attrs.price,
+                fontFamily: 'Calibri',
+                fontSize: 13,
+                padding: 5,
+                fill: 'white'
+              }));
+              layer.add(tooltip);
+
+              // effect
+              if (!this.attrs.checked) 
+                this.attrs.fill = 'rgba(11, 255, 114, 1)';
+  
+              // bind event
+              this.on('mouseout', function() {
+                tooltip.remove();
+                if (!this.attrs.checked) {
+                  this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
+                  this.attrs.stroke = null;
+                }
+                layer.draw();
+              });
+  
+              
+              layer.batchDraw();
+            } // </if (!this.attrs.sold)>
+            
+          });
+          
+          seat.on('mouseup', function() {
+            if (!this.attrs.sold ){
+              if (!this.attrs.checked && tickets.length < 10) {
+               
+                this.attrs.fill = 'rgba(226, 37, 25, 1)';
+                this.attrs.stroke = '#333'
+                this.attrs.checked = true;
+                // buy the ticket into cart
+                tickets.push({
+                  id: this.attrs.id,
+                  name: this.attrs.name,
+                  price: this.attrs.price
+                });
+                console.log(tickets);
+              } else {
+                this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
+                this.attrs.stroke = null;
+                this.attrs.checked = false;
+                // remove ticket from cart
+                for (var i=0; i < tickets.length; i++)
+                  if (tickets[i]['id'] == this.attrs.id)
+                    tickets.splice(tickets[i], 1);
+              }
+            }
+            layer.draw();
+          });
+
+          layer.add(seat);
+          layer.draw();
+        }
+        
+
+        layer.add(arena);
+        layer.add(txtArena);
+        stage.add(layer);
+  
+
+        
+        </script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>

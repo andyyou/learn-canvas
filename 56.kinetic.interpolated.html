@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+        body{
+          padding-top: 60px;
+        }
+        </style>
+        <script src="js/modernizr.min.js"></script>
+        <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>-->
+        <!--<script src="js/angular.min.js"></script>-->        
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">ICE</a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="#about">About</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div><!--/.navbar -->
+
+        <div class="container">
+          <h1>Hello, Grunt-init ICE</h1>
+          <div id="container"></div>
+        </div>
+
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src='js/kinetic-v4.7.3.min.js'></script>
+        <script>
+        var stage = new Kinetic.Stage({
+          container: 'container',
+          width: 578,
+          height: 200
+        });
+
+        var layer = new Kinetic.Layer();
+        var blueSpline = new Kinetic.Spline({
+          points: [{
+              x: 73,
+              y: 160
+            },
+            {
+              x: 340,
+              y:23
+            },
+            {
+              x: 500,
+              y: 109
+            },
+            {
+              x: 300,
+              y: 109
+            }
+          ],
+          stroke: 'blue',
+          strokeWidth: 10,
+          lineCap: 'round',
+          tension: 1
+        });
+
+        var cir1 = new Kinetic.Circle({
+          x: 73,
+          y: 160,
+          radius: 10,
+          fill: 'black'
+        });
+        var cir2 = new Kinetic.Circle({
+          x: 340,
+          y: 23,
+          radius: 10,
+          fill: 'black'
+        });
+         var cir3 = new Kinetic.Circle({
+          x: 500,
+          y: 109,
+          radius: 10,
+          fill: 'black'
+        });
+        var cir4 = new Kinetic.Circle({
+          x: 300,
+          y: 109,
+          radius: 10,
+          fill: 'black'
+        });
+        var redSpline = new Kinetic.Spline({
+          points: [
+            {x:73, y: 160},
+            {x:340, y:23},
+            {x:500, y: 109},
+            {x:300, y:109}
+          ],
+          stroke: 'red',
+          strokeWidth: 10,
+          lineCap: 'round',
+          tension: 0.5
+        });
+
+        var greenSpline = new Kinetic.Spline({
+          points: [
+            {x: 20, y: 50},
+            {x: 340, y: 50},
+            {x: 200, y: 150},
+            {x: 250, y: 150}
+          ],
+          stroke: 'green',
+          strokeWidth: 5,
+          lineCap: 'round',
+          tension: 1,
+          dashArray: [10, 10]
+        });
+        layer.add(cir1);
+        layer.add(cir2);
+        layer.add(cir3);
+        layer.add(cir4);
+
+        layer.add(blueSpline);
+        layer.add(redSpline);
+        layer.add(greenSpline);
+        stage.add(layer);
+        
+        </script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>
