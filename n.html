@@ -49,89 +49,42 @@
         </div><!--/.navbar -->
 
         <div class="container">
-          <h1>座位表系統 Example-1</h1>
+          <h1>Hello, Grunt-init ICE</h1>
           <div id="container"></div>
         </div>
 
         <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-        <script src='js/kinetic-v4.7.4.min.js'></script>
+        <script src='js/kinetic-v4.7.3.min.js'></script>
         <script>
-        // variables
-        var dragging = false;
-        var inhere = false;
-        var selectionExists = false;
-        var rectSelection = null;
-        var initX = 0;
-        var initY = 0;
 
-        // stage
         var stage = new Kinetic.Stage({
           container: 'container',
           width: 480,
-          height: 320,
-        });
-        
-
-        stage.getContent().addEventListener('mousemove', function(e) {
-          if (dragging) {
-            SetSelectionArea(e);
-          }
+          height: 320
         });
 
-        stage.getContent().addEventListener('mouseup', function(e) {
-          if (dragging) {
-            dragging = false;
-            // -- <TODO>, <UNDONE>
-            if (rectSelection == null)
-              return;
-            var mousepos = stage.getPointerPosition();
-            var x = mousepos.x;
-            var y = mousepos.y;
-            var height = Math.abs(Math.abs(y) - Math.abs(initY));
-            var width = Math.abs(Math.abs(x) - Math.abs(initX));
-            // var centerX = initX + 
-            var scaleX = stage.getWidth() / width / 3;
-            var scaleY = stage.getHeight() / height / 3;
-            var zoomnum = (scaleX > scaleY) ? scaleY : scaleX ;
-            layer.setScale(zoomnum);
-            layer.setOffset(initX, initY);
-            layer.batchDraw();
+        var layer = new Kinetic.Layer({visible: false});
+        var layerTooltip = new Kinetic.Layer();
+        var layerMenu = new Kinetic.Layer({visible: true});
 
-            //--
-            if (rectSelection != null)
-              rectSelection.remove();
-
-            rectSelection = null;
-            selectionExists = false;
-            layerBackground.batchDraw();
-          }
+        // test
+        var menu = new Kinetic.Rect({
+          x: 100,
+          y: 100,
+          width: 300,
+          height: 300,
+          fill: 'blue'
         });
-
-        // layers
-        var layerBackground = new Kinetic.Layer();
-        var layer           = new Kinetic.Layer({scale: 0.5});
-        var layerTooltip    = new Kinetic.Layer();
-
-        // objects of layerBackground
-        var rectBackground = new Kinetic.Rect({
-          x: 0,
-          y: 0,
-          height: stage.getHeight(),
-          width: stage.getWidth(),
-          fill: 'transparent',
-          draggable: false,
-          name: 'rectBackground'
+        menu.on('click', function(){
+          layer.setVisible(true);
+          layerMenu.setVisible(false);
+          stage.draw();
         });
-        layerBackground.on('mousedown', function(e) {
-          dragging = true;
-        });
-        layerBackground.add(rectBackground);
-
-
-        // objects of layer
-        var rectArena = new Kinetic.Rect({
+        layerMenu.add(menu);
+        // test
+        var arena = new Kinetic.Rect({
           x: 2,
           y: stage.getHeight()/3*2+30,
           width: 446,
@@ -147,15 +100,14 @@
           fontSize: 20,
           fill: 'rgba(255, 150, 150, 1)'
         });
+        // align label
         txtArena.setOffset({
           x: txtArena.getWidth()/2
         });
-
-        
-        layer.add(rectArena);
+        layer.add(arena);
         layer.add(txtArena);
 
-        // object of layerTooltip
+
         var tooltip = new Kinetic.Label({
           opacity: 0.75,
           visible: false,
@@ -178,7 +130,8 @@
         }));
         layerTooltip.add(tooltip);
 
-        // seats coordinate
+        // initialize seats
+        
         var seats = [
           {x:144, y:19, id: '10-1',   sold: false, price: 100,    name: '劉德華-一般票', color: '11, 182, 114, 0.8'},
           {x:162, y:19, id: '10-2',   sold: false, price: 100,    name: '劉德華-一般票', color: '11, 182, 114, 0.8'},
@@ -463,68 +416,13 @@
           layer.add(seat); // done, add seat to layer
         }
         
-        // add layers to stage 
-        stage.add(layerBackground); 
+        // render to stage
         stage.add(layer);
-       
         stage.add(layerTooltip);
-        // stage.add(layerDraggab);
+        stage.add(layerMenu);
   
-        //--------------------------------------------------
 
-        // functions
-        var SetSelectionArea = function (e) {
-          if (dragging && !inhere) {
-            inhere = true;
-            var canvas = layer.getCanvas();
-            var mousepos = stage.getPointerPosition();
-            var x = mousepos.x;
-            var y = mousepos.y;
-            if (!selectionExists) {
-              initX = x;
-              initY = y;
-              rectSelection = new Kinetic.Rect({
-                x: initX,
-                y: initY,
-                height: 1,
-                width: 1,
-                fill: 'rgba(0, 0, 0, 0.2)'
-              });
-              layerBackground.add(rectSelection);
-              layerBackground.batchDraw();
-              selectionExists = true;
-            } else {
-              var height = 0;
-              var width  = 0;
-              var newX   = 0;
-              var newY   = 0;
-
-              if (x > initX)
-                newX = initX;
-              else
-                newX = x;
-              if (y > initY)
-                newY = initY;
-              else
-                newY = y;
-
-              var height = Math.abs(Math.abs(y) - Math.abs(initY));
-              var width = Math.abs(Math.abs(x) - Math.abs(initX));
-              rectSelection.setHeight(height);
-              rectSelection.setWidth(width);
-              rectSelection.setX(newX);
-              rectSelection.setY(newY);
-              layerBackground.batchDraw();
-            }
-          }
-          inhere = false;
-        }
-
-        var ZoomIn = function(e) {
-
-        } 
         
-
         </script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

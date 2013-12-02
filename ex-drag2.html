@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+        body{
+          padding-top: 60px;
+        }
+        </style>
+        <script src="js/modernizr.min.js"></script>
+        <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>-->
+        <!--<script src="js/angular.min.js"></script>-->        
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">ICE</a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="#about">About</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div><!--/.navbar -->
+
+        <div class="container">
+          <h1>Hello, Grunt-init ICE</h1>
+          <div id="container"></div>
+        </div>
+
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src='js/kinetic-v4.7.3.min.js'></script>
+        <script>
+        var ui = {
+            stage: null,
+            scale: 1,
+            zoomFactor: 1.1,
+            origin: {
+                x: 0,
+                y: 0
+            },
+            zoom: function(event) {
+                event.preventDefault();
+                var evt = event.originalEvent,
+                    mx = evt.clientX /* - canvas.offsetLeft */,
+                    my = evt.clientY /* - canvas.offsetTop */,
+                    wheel = evt.wheelDelta / 120;
+                var zoom = (ui.zoomFactor - (evt.wheelDelta < 0 ? 0.2 : 0));
+                var newscale = ui.scale * zoom;
+                ui.origin.x = mx / ui.scale + ui.origin.x - mx / newscale;
+                ui.origin.y = my / ui.scale + ui.origin.y - my / newscale;
+        
+                ui.stage.setOffset(ui.origin.x, ui.origin.y);
+                ui.stage.setScale(newscale);
+                ui.stage.draw();
+        
+                ui.scale *= zoom;
+            }
+        };
+        
+        $(function() {
+            var width = $(document).width() - 2,
+                height = $(document).height() - 5;
+            var stage = ui.stage = new Kinetic.Stage({
+                container: 'container',
+                width: width,
+                height: height
+            });
+            var layer = new Kinetic.Layer({
+                draggable: true
+            });
+            var rectX = stage.getWidth() / 2 - 50;
+            var rectY = stage.getHeight() / 2 - 25;
+        
+            var box = new Kinetic.Circle({
+                x: 100,
+                y: 100,
+                radius: 50,
+                fill: '#00D200',
+                stroke: 'black',
+                strokeWidth: 2,
+            });
+        
+            // add cursor styling
+            box.on('mouseover', function() {
+                document.body.style.cursor = 'pointer';
+            });
+            box.on('mouseout', function() {
+                document.body.style.cursor = 'default';
+            });
+        
+            layer.add(box);
+            stage.add(layer);
+        
+            $(stage.content).on('mousewheel', ui.zoom);
+        });      
+        </script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>

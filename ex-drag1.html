@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>KineticJS - Zoom and pan  example ( V1r00z ) </title>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+            }
+            canvas {
+                border: 1px solid #9C9898;
+            }
+            #container {
+                cursor:url(http://www.eifund.net/T3/fileadmin/Template/ZoomInCur.gif), pointer;
+            }
+        </style>
+      <script src='js/kinetic-v4.7.3.min.js'></script>
+    
+        <script>
+    
+            window.onload = function(){ //init function
+                var stage = new Kinetic.Stage({
+                    container: 'container',
+                    width:  150,
+                    height: 100
+                }); 
+                
+                var layer = new Kinetic.Layer();
+                var imageF;
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    imageF = new Kinetic.Image({
+                        x: 0,
+                        y: 0,
+                        width : 150,
+                        height:100,
+                        image: imageObj
+                    });
+
+                    layer.add(imageF);
+
+                    stage.add(layer);
+                    
+                    
+                }
+
+                imageObj.src = "http://www.netzgesta.de/shiftzoom/mosaic.jpg";
+                var mouseDown = 0;
+                document.body.onmousedown = function() { 
+                    ++mouseDown;
+            
+                }
+                 
+                var iid; 
+                var zoom=0;
+                document.getElementById('container').addEventListener('mousedown', function(e) {
+                    iid = setInterval(function(){
+                        
+                       
+                        zoom+=0.1;
+                        stage.setOffset(e.offsetX,e.offsetY);
+                        stage.setScale(stage.getScale().x+zoom,stage.getScale().y+zoom);
+                      
+                 
+                        imageF.setPosition(e.offsetX/stage.getScale().x  ,e.offsetY/stage.getScale().y );
+                        
+                       
+                        stage.draw();
+                    }, 100);
+                     
+                }, false);
+                document.getElementById('container').addEventListener('mouseup', function(e) {
+                    clearInterval( iid);
+             
+                }, false);
+            
+           
+                stage.setScale(1,1);
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id="container"></div>
+    </body>
+</html>
