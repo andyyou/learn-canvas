@@ -534,21 +534,38 @@
         stage.add(layer);
         stage.add(layerTooltip);
         // stage.add(layerDraggab);
-
-        stage.getContainer().addEventListener(mousewheel, function(e, delta){
-          // fixed when cursor on seat and wheel
-          if (hoverSeatId) {
-            var seat = stage.find('#' + hoverSeatId)[0];
-            if (!seat.attrs.sold && !seat.attrs.checked) {
-              tooltip.hide(); 
-              layerTooltip.draw();
-              seat.attrs.fill = 'rgba(' + seat.attrs.color + ')';
-              seat.attrs.stroke = null;
+        if(document.attachEvent){
+          stage.getContainer().attachEvent('on' + mousewheel, function(e, delta){
+            // fixed when cursor on seat and wheel
+            if (hoverSeatId) {
+              var seat = stage.find('#' + hoverSeatId)[0];
+              if (!seat.attrs.sold && !seat.attrs.checked) {
+                tooltip.hide(); 
+                layerTooltip.draw();
+                seat.attrs.fill = 'rgba(' + seat.attrs.color + ')';
+                seat.attrs.stroke = null;
+              }
             }
-          }
-          
-          Zoom(e);
-        });
+            
+            Zoom(e);
+          });
+        } else if (document.addEventListener) {
+          stage.getContainer().addEventListener(mousewheel, function(e, delta){
+            // fixed when cursor on seat and wheel
+            if (hoverSeatId) {
+              var seat = stage.find('#' + hoverSeatId)[0];
+              if (!seat.attrs.sold && !seat.attrs.checked) {
+                tooltip.hide(); 
+                layerTooltip.draw();
+                seat.attrs.fill = 'rgba(' + seat.attrs.color + ')';
+                seat.attrs.stroke = null;
+              }
+            }
+            
+            Zoom(e);
+          });
+        }
+        
         
         //--------------------------------------------------
 
