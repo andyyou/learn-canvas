@@ -431,7 +431,7 @@
             checked:  false      // only for frontend
           });
 
-          seat.on('mouseover mousemove', function(evt){
+          seat.on('mouseover', function(evt){
             // add tooltip
             if (!this.attrs.sold) {
               if (!this.attrs.checked) {
@@ -616,23 +616,15 @@
           }
 
           if (nowScale > minScale && nowScale < maxScale) {
-            var dom = document.getElementById('#container');
+            var dom = document.getElementById('container');
             var canvaspos = GetPosition(dom);
             var pos = stage.getAbsolutePosition();
+
             var mousepos = stage.getPointerPosition();
             var smallCalc = (e.pageX - pos.x - canvaspos.x)/scale;
             var smallCalcY = (e.pageY - pos.y - canvaspos.y)/scale;
             var endCalc = (e.pageX - canvaspos.x) - nowScale*smallCalc;
             var endCalcY = (e.pageY - canvaspos.y) - nowScale*smallCalcY;
-            
-            // console.dir(canvaspos);
-            // console.dir(pos);
-            // console.dir(mousepos);
-            // console.log("smallCalc: " + smallCalc);
-            // console.log("smallCalcY: " + smallCalcY);
-            // console.log("endCalc: " + endCalc);
-            // console.log("endCalcY: " + endCalcY);
-
             scale = nowScale;
             stage.setPosition(endCalc, endCalcY);
             layer.setScale(nowScale);
@@ -648,20 +640,120 @@
 
         // jquery and dom ready
         $(function(){
+          var anim;
           $('#zoomResize').click(function(){
-            stage.setPosition(0, 0);
-            layer.setScale(1);
-            layer.batchDraw();
+            if (!anim || !anim.isRunning()){
+              anim = new Kinetic.Animation(function(frame) {
+              var pos = stage.getAbsolutePosition();
+                if (scale == 1 && pos.x == 0 && pos.y == 0) {
+                  frame.time = 0;
+                  this.stop();
+                } else {
+          
+                  var frameOfLayer = (scale - 1) * (frame.time / 500);
+          
+                  if ((scale > 1 && scale - frameOfLayer <= 1) || (scale < 1 && scale + frameOfLayer >= 1)) {
+                    scale = 1;
+                  } else {
+                    scale = scale - frameOfLayer;
+                  }
+          
+                  // adjust stage position
+                  var frameOfStageX = (pos.x - 0) * (frame.time / 500);
+                  var frameOfStageY = (pos.y - 0) * (frame.time / 500);
+          
+                  if ((pos.x > 0 && pos.x - frameOfStageX <= 0) || (pos.x < 0 && pos.x + frameOfStageX >= 0)) {
+                    frameOfStageX = 0;
+                  } else {
+                    frameOfStageX = pos.x - frameOfStageX;
+                  }
+          
+                  if ((pos.y > 0 && pos.y - frameOfStageY <= 0) || (pos.y < 0 && pos.y + frameOfStageY >= 0)) {
+                    frameOfStageY = 0;
+                  } else {
+                    frameOfStageY = pos.y - frameOfStageY;
+                  }
+          
+                  stage.setPosition(frameOfStageX, frameOfStageY);
+                  layer.setScale(scale);
+                }
+              }, layer);
+              
+              anim.start();
+            }
+            
           });
           $('#zoomIn').click(function(e){
-            scale = scale + 0.1875;
-            layer.setScale(scale);
-            layer.batchDraw();
+            if (!anim || !anim.isRunning()){
+              var endScale = scale + 0.1875 >= maxScale ? maxScale : scale + 0.1875;
+              var widthScale = (stage.getWidth() * 1.1875 - stage.getWidth()) / 2;
+              var heightScale = (stage.getHeight() * 1.1875 - stage.getHeight()) / 2;
+  
+              anim = new Kinetic.Animation(function(frame) {
+                if (scale == endScale) {
+                  frame.time = 0;
+                  this.stop();
+                  console.log(stage.getAbsolutePosition().x);
+                  console.log(stage.getAbsolutePosition().y);
+                } else {
+  
+                  var frameOfLayer = 0.1875 * 0.1;
+  
+                  if (scale + frameOfLayer >= endScale) {
+                    scale = endScale;
+                  } else {
+                    scale = scale + frameOfLayer;
+                    scale = Math.round(scale * 1000)/1000;
+                  }
+  
+                  // adjust stage position
+                  var pos = stage.getAbsolutePosition();
+                  var frameOfStageX = pos.x - widthScale * 0.1;
+                  var frameOfStageY = pos.y - heightScale * 0.1;
+  
+                  layer.setScale(scale);
+                  stage.setPosition(frameOfStageX, frameOfStageY);
+                }
+              }, layer);
+              
+              anim.start();
+            } 
+            
           });
           $('#zoomOut').click(function(e){
-            scale = scale - 0.1875;
-            layer.setScale(scale);
-            layer.batchDraw();
+            if (!anim || !anim.isRunning()){
+              var endScale = scale - 0.1875 <= minScale ? minScale : scale - 0.1875;
+              var widthScale = (stage.getWidth() * 1.1875 - stage.getWidth()) / 2;
+              var heightScale = (stage.getHeight() * 1.1875 - stage.getHeight()) / 2;
+  
+              anim = new Kinetic.Animation(function(frame) {
+                if (scale == endScale) {
+                  frame.time = 0;
+                  this.stop();
+                } else {
+  
+                  var frameOfLayer = 0.1875 * 0.1;
+  
+                  if (scale - frameOfLayer <= endScale) {
+                    scale = endScale;
+                  } else {
+                    scale = scale - frameOfLayer;
+                    scale = Math.round(scale * 1000)/1000;
+                  }
+  
+                  // adjust stage position
+                  var pos = stage.getAbsolutePosition();
+                  var frameOfStageX = pos.x + widthScale * 0.1;
+                  var frameOfStageY = pos.y + heightScale * 0.1;
+  
+                  layer.setScale(scale);
+                  stage.setPosition(frameOfStageX, frameOfStageY);
+                }
+              }, layer);
+              
+              anim.start();
+            }
+            
           });
         })
        
