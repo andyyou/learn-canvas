@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+        body{
+          padding-top: 60px;
+        }
+        #container{border: 1px solid black;}
+        canvas{border: 1px solid red !important;}
+        </style>
+        <script src="js/modernizr.min.js"></script>
+        <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>-->
+        <!--<script src="js/angular.min.js"></script>-->        
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">ICE</a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="#about">About</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div><!--/.navbar -->
+
+        <div class="container">
+          <div id="container"></div>
+        </div>
+
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src='js/kinetic-v4.7.4.min.js'></script>
+        <script>
+        // global variable  -----------------------------------------------------
+        var aryTickets = [];
+        var isDragging = false;
+        var isSelectBoxExists = false;
+        var isSelectBoxDrawing = false;
+        var rectSelectBox = null;
+        var selectBoxInitX = 0;
+        var selectBoxInitY = 0;
+
+
+        // init stage and layer object  -----------------------------------------------------
+        var stage = new Kinetic.Stage({
+          container: 'container',
+          width: 500,
+          height: 300
+        });
+        var layer = new Kinetic.Layer();
+
+        var rectBackground = new Kinetic.Rect({
+          x: 0,
+          y: 0,
+          width: stage.getWidth(),
+          height: stage.getHeight(),
+          fill: 'transparent',
+          draggable: false,
+          name: 'background'
+        });
+        rectBackground.on('mousedown', function(e){
+          isDragging = true;
+        });
+
+        layer.add(rectBackground);
+
+        // remove rectangles from layer -----------------------------------------------------
+        // try{
+        //   var o = layer.get('.green')[0];
+        //   if(o) o.remove();
+
+        //   o = layer.get('.red')[0];
+        //   if(o) o.remove();
+
+        //   o = layer.get('.blue')[0];
+        //   if(o) o.remove();
+        // } catch (err) { console.log('remove error') }
+
+        // draw some rectangle on layer -----------------------------------------------------
+        // 1
+        var grp = new Kinetic.Group({
+          x: 100,
+          y: 100,
+          width: 50,
+          height: 50,
+          name: 'green',
+          draggable: true
+        });
+        var block = new Kinetic.Rect({
+          x: 0,
+          y: 0,
+          width: grp.getWidth(),
+          height: grp.getHeight(),
+          fill: 'green',
+          name: 'greenblock'
+        }) ;
+        grp.add(block);
+        // 絕對位置是跟 stage 的位置比較。
+        // block.setAbsolutePosition(100, 100);
+        // console.log(grp.getPosition());
+        // console.log(block.getPosition());
+        layer.add(grp);
+        // layer.draw(); // update need
+        // 2
+        grp = new Kinetic.Group({
+          x: 150,
+          y: 10,
+          width: 80,
+          height: 80,
+          name: 'red',
+          draggable: true
+        });
+        block = new Kinetic.Rect({
+          x: 0,
+          y: 0,
+          width: grp.getWidth(),
+          height: grp.getHeight(),
+          fill: 'red',
+          name: 'redblock'
+        });
+        grp.add(block);
+        // block.setAbsolutePosition(150, 10);
+        layer.add(grp);
+        // layer.draw();
+        // 3
+        grp = new Kinetic.Group({
+          x: 110,
+          y: 170,
+          width: 30,
+          height: 30,
+          name: 'blue',
+          draggable: true
+        });
+        block = new Kinetic.Rect({
+          x: 0,
+          y: 0,
+          width: grp.getWidth(),
+          height: grp.getHeight(),
+          name: 'blueblock',
+          fill: 'blue'
+        });
+        grp.add(block);
+        layer.add(grp);
+        // layer.draw();
+
+        // create a button -----------------------------------------------------
+        var grpButton = new Kinetic.Group({
+          x: 50,
+          y: 250,
+          width: 80,
+          height: 30,
+          name: 'btn'
+        });
+        var rectButton = new Kinetic.Rect({
+          x: 0,
+          y: 0,
+          width: grpButton.getWidth(),
+          height: grpButton.getHeight(),
+          fill: 'violet',
+          name: 'btn'
+        });
+        var txtButton = new Kinetic.Text({
+          x: 0,
+          y: grpButton.getHeight()/2 - 6,
+          fontFamily: 'Calibri',
+          fontSize: 12,
+          text: 'Show',
+          width: grpButton.getWidth(),
+          height: 12,
+          align: 'center',
+          fill: 'black',
+          name: 'btn'
+        });
+        grpButton.add(rectButton);
+        grpButton.add(txtButton);
+        grpButton.on('click', function(e) {
+          var str = '';
+          for (var i = 0; i < aryTickets.length; i++) {
+            str += aryTickets[i] + ', ';
+          }
+          if (str != '')
+            str = str.substring(0, str.length - 2);
+
+          console.log(str);
+          alert(str);
+        });
+        layer.add(grpButton);
+
+        // stage event binding-----------------------------------------------------
+        stage.getContent().addEventListener('mousemove', function(e) {
+          if (isDragging) {
+            if(isDragging && !isSelectBoxDrawing) {
+              isSelectBoxDrawing = true;
+              var canvas = layer.getCanvas();
+              var mousePos = stage.getPointerPosition();
+              var x = mousePos.x;
+              var y = mousePos.y; 
+              if (!isSelectBoxExists) {
+                selectBoxInitX = x;
+                selectBoxInitY = y;
+                rectSelectBox = new Kinetic.Rect({
+                  x: selectBoxInitX,
+                  y: selectBoxInitY,
+                  width: 1,
+                  height: 1,
+                  fill: 'rgba(0,0,0,0.2)'
+                });
+                layer.add(rectSelectBox);
+                layer.draw();
+                isSelectBoxExists = true;
+              } else {
+                var height = 0;
+                var width = 0;
+                var newX = 0;
+                var newY = 0;
+                if (x > selectBoxInitX)
+                  newX = selectBoxInitX;
+                else
+                  newX = x;
+                if (y > selectBoxInitY)
+                  newY = selectBoxInitY;
+                else
+                  newY = y;
+                width = Math.abs(Math.abs(x) - Math.abs(selectBoxInitX));
+                height = Math.abs(Math.abs(y) - Math.abs(selectBoxInitY));
+                rectSelectBox.setWidth(width);
+                rectSelectBox.setHeight(height);
+                rectSelectBox.setX(newX);
+                rectSelectBox.setY(newY);
+                layer.draw(); // refresh
+              }
+            }
+            isSelectBoxDrawing = false;
+          }
+        });
+        stage.getContent().addEventListener('mouseup', function(e) {
+          if (isDragging) {
+            isDragging = false;
+            // Get overlapped 取得重疊區塊
+            if (rectSelectBox == null) // 如果選取區塊為空就不做事
+              return;
+            // var rangeWidth = -1000;
+            // var rangeHeight = 0;
+            aryTickets.length = 0;
+            selectBoxInitX = 10;
+            selectBoxInitY = 10;
+
+            var aryGroups = layer.getChildren(); // 統一取得所有子元素 group
+            for(var i = 0; i<aryGroups.length; i++) {
+              var grp = aryGroups[i];
+              // exclude selectbox and button etc... 排除作用的物件只剩可以被選取的物件
+              if (grp.attrs.name != rectSelectBox.attrs.name &&
+                  grp.attrs.name != rectBackground.attrs.name &&
+                  grp.attrs.name != 'btn' &&
+                  grp.attrs.name != 'highlight')
+              {
+                var pos = rectSelectBox.getAbsolutePosition();
+                // 取得選取範圍 x, y
+                var startX = parseInt(pos.x);
+                var endX = parseInt(pos.x) + parseInt(rectSelectBox.getWidth());
+                var startY = parseInt(pos.y);
+                var endY = parseInt(pos.y) + parseInt(rectSelectBox.getHeight());
+
+                // 取得物件的四點
+                var grpStartX = parseInt(grp.getX());
+                var grpEndX = parseInt(grp.getX()) + parseInt(grp.getWidth());
+                var grpStartY = parseInt(grp.getY());
+                var grpEndY = parseInt(grp.getY()) + parseInt(grp.getHeight());
+
+                // Compare 比對
+                if ((startX <= grpStartX && endX >= grpEndX) && (startY <= grpStartY && endY >= grpEndY)) {
+                  // 如果陣列裡面沒有該物件
+                  if (aryTickets.indexOf(grp.getName()) < 0){
+                    aryTickets.push(grp.getName());
+                    // 取得起始位置，畫上 highlight
+                    var tmpX = parseInt(grp.getX());
+                    var tmpY = parseInt(grp.getY());
+                    var rectHighlight = new Kinetic.Rect({
+                      x: tmpX,
+                      y: tmpY,
+                      width: grp.getWidth(),
+                      height: grp.getHeight(),
+                      fill: 'rgba(0,0,255,0.1)',
+                      stroke: 'rgba(0,0,0,0.5)',
+                      srokeWidth: 1,
+                      name: 'highlight'
+                    });
+                    layer.add(rectHighlight)
+                  }
+                } 
+              }
+            }
+            // ↑↑↑↑↑↑↑ 重疊處理完畢 ，接著移除選取方塊。✚✚✚✚
+            if (rectSelectBox != null)
+            {
+              rectSelectBox.remove();
+            }
+              
+            rectSelectBox = null;
+            isSelectBoxExists = false;
+            layer.draw();
+          }
+console.log('mouseup');
+        });
+        stage.getContent().addEventListener('mousedown', function(e){
+console.log('mousedown');
+          if (aryTickets.length > 0) {
+            var name = '';
+
+            if (e.shape != undefined)
+              name = e.shape.attrs.name;
+
+            if (e.targetNode != undefined)
+              name = e.targetNode.attrs.name;
+
+            if(name != 'btn')
+            {
+
+              var aryHighlights = layer.get('.highlight');
+console.dir(aryHighlights);
+              while(aryHighlights.length > 0){
+                aryHighlights[0].remove();
+                aryHighlights = layer.get('.highlight');
+              }
+              aryTickets.length = 0;
+            }
+          }
+        })
+        // -----------------------------------------------------
+        // -----------------------------------------------------
+
+        // finally, add layer into stage -----------------------------------------------------
+        stage.add(layer);
+
+        </script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>

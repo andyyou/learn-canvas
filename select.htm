@@ -81,6 +81,7 @@ stage.getContent().addEventListener('mousemove', function (e)
 
 stage.getContent().addEventListener('mouseup', function (e)
 {
+console.log('mouseup');
     if (bDragging)
     {
         bDragging = false;
@@ -98,6 +99,7 @@ stage.getContent().addEventListener('mouseup', function (e)
 
 stage.getContent().addEventListener('mousedown', function (e)
 {   
+console.log('mousedown');
     if(arSelected.length > 0)
     {
         var name = "";
