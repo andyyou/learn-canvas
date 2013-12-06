@@ -171,6 +171,7 @@
           width: stageWidth,
           height: stageHeight,
           scale: defaultScale,
+          draggable: false,
           x: defaultOffsetX,
           stroke: 'black'
         });
@@ -193,7 +194,6 @@
         });
 
         rectBackground.on('mousedown', function(e) {
-console.log('background mousedown')
           if (!e.shiftKey) {
             isDragging = true;
           } 
@@ -519,11 +519,7 @@ console.log('background mousedown')
         // **** stage events 
         stage.getContainer().addEventListener('mousedown', function(e){
           // document.body.style.cursor = 'all-scroll';
-          if (e.shiftKey) {
-            stage.setDraggable(true);
-          } else {
-            stage.setDraggable(false);
-          }
+          
           if (seatsConfig.length > 0) {
             var name = '';
 
@@ -542,7 +538,6 @@ console.log('background mousedown')
           }
         });
         stage.getContainer().addEventListener('mouseup', function(e){
-
           if (isDragging) {
             isDragging = false;
 
@@ -562,12 +557,22 @@ console.log('background mousedown')
           layer.batchDraw();
         });
         stage.getContainer().addEventListener('mousemove', function(e) {
-
           if(isDragging){
             SetSelectionArea(e);
           }
         });
 
+        document.onkeydown = function(e) {
+          if (e.shiftKey) {
+            document.body.style.cursor = 'all-scroll';
+            stage.setDraggable(true);
+          }
+        }
+        
+        document.onkeyup = function(e) {
+          document.body.style.cursor = 'default';
+          stage.setDraggable(false);
+        }
         if(document.attachEvent){
           stage.getContainer().attachEvent('on' + mousewheel, function(e, delta){
             // fixed when cursor on seat and wheel
