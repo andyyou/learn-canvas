@@ -131,28 +131,6 @@
         // block.setAbsolutePosition(100, 100);
         // console.log(grp.getPosition());
         // console.log(block.getPosition());
-        grp.on('click', function(e) {
-          if (aryTickets.indexOf(this.getName()) < 0){
-            aryTickets.push(grp.getName());
-            var tmpX = parseInt(this.getX());
-            var tmpY = parseInt(this.getY());
-            var rectHighlight = new Kinetic.Rect({
-              x: tmpX,
-              y: tmpY,
-              width: this.getWidth(),
-              height: this.getHeight(),
-              fill: selectedColor,
-              stroke: selectedBorderColor,
-              srokeWidth: selectedBorderWidth,
-              name: 'highlight'
-            });
-            rectHighlight.on('click', function() {
-                layer.draw();
-            });
-            layer.add(rectHighlight);
-            layer.draw();
-          }
-        });
         layer.add(grp);
         // layer.draw(); // update need
         // 2
@@ -174,28 +152,6 @@
         });
         grp.add(block);
         // block.setAbsolutePosition(150, 10);
-        grp.on('click', function(e) {
-          if (aryTickets.indexOf(this.getName()) < 0){
-            aryTickets.push(grp.getName());
-            var tmpX = parseInt(this.getX());
-            var tmpY = parseInt(this.getY());
-            var rectHighlight = new Kinetic.Rect({
-              x: tmpX,
-              y: tmpY,
-              width: this.getWidth(),
-              height: this.getHeight(),
-              fill: selectedColor,
-              stroke: selectedBorderColor,
-              srokeWidth: selectedBorderWidth,
-              name: 'highlight'
-            });
-            rectHighlight.on('click', function() {
-                layer.draw();
-            });
-            layer.add(rectHighlight);
-            layer.draw();
-          }
-        });
         layer.add(grp);
         // layer.draw();
         // 3
@@ -216,28 +172,6 @@
           fill: 'blue'
         });
         grp.add(block);
-        grp.on('click', function(e) {
-          if (aryTickets.indexOf(this.getName()) < 0){
-            aryTickets.push(grp.getName());
-            var tmpX = parseInt(this.getX());
-            var tmpY = parseInt(this.getY());
-            var rectHighlight = new Kinetic.Rect({
-              x: tmpX,
-              y: tmpY,
-              width: this.getWidth(),
-              height: this.getHeight(),
-              fill: selectedColor,
-              stroke: selectedBorderColor,
-              srokeWidth: selectedBorderWidth,
-              name: 'highlight'
-            });
-            rectHighlight.on('click', function() {
-                layer.draw();
-            });
-            layer.add(rectHighlight);
-            layer.draw();
-          }
-        });
         layer.add(grp);
         // layer.draw();
 
@@ -333,12 +267,11 @@
           }
         });
         stage.getContent().addEventListener('mouseup', function(e) {
-console.log('stage mouseup');
           if (isDragging) {
             isDragging = false;
+
             // Get overlapped 取得重疊區塊
             if (rectSelectBox != null) { // 如果選取區塊為空就不做事
-
               // var rangeWidth = -1000;
               // var rangeHeight = 0;
               aryTickets.length = 0;
@@ -347,13 +280,13 @@ console.log('stage mouseup');
   
               var aryGroups = layer.getChildren(); // 統一取得所有子元素 group
               for(var i = 0; i<aryGroups.length; i++) {
-              var grp = aryGroups[i];
-              // exclude selectbox and button etc... 排除作用的物件只剩可以被選取的物件
-              if (grp.attrs.name != rectSelectBox.attrs.name &&
+                var grp = aryGroups[i];
+                // exclude selectbox and button etc... 排除作用的物件只剩可以被選取的物件
+                if (grp.attrs.name != rectSelectBox.attrs.name &&
                   grp.attrs.name != rectBackground.attrs.name &&
                   grp.attrs.name != 'btn' &&
                   grp.attrs.name != 'highlight')
-              {
+                {
                 var pos = rectSelectBox.getAbsolutePosition();
                 // 取得選取範圍 x, y
                 var startX = parseInt(pos.x);
@@ -385,28 +318,72 @@ console.log('stage mouseup');
                       srokeWidth: selectedBorderWidth,
                       name: 'highlight'
                     });
-                    rectHighlight.on('click', function(e) {
-                      layer.draw();
-                    });
                     layer.add(rectHighlight)
                   }
                 } 
-              }
+                }
               }
             }
+
             // ↑↑↑↑↑↑↑ 重疊處理完畢 ，接著移除選取方塊。✚✚✚✚
             if (rectSelectBox != null)
             {
               rectSelectBox.remove();
             }
-              
+            
             rectSelectBox = null;
             isSelectBoxExists = false;
             layer.draw();
+          } else {
+            
+            var aryGroups = layer.getChildren();
+            for(var i = 0; i<aryGroups.length; i++) {
+                var grp = aryGroups[i];
+                // exclude selectbox and button etc... 排除作用的物件只剩可以被選取的物件
+                if ( grp.attrs.name != 'background' &&
+                  grp.attrs.name != 'btn' &&
+                  grp.attrs.name != 'highlight')
+                {
+
+                
+
+                // 取得物件的四點
+                var grpStartX = parseInt(grp.getX());
+                var grpEndX = parseInt(grp.getX()) + parseInt(grp.getWidth());
+                var grpStartY = parseInt(grp.getY());
+                var grpEndY = parseInt(grp.getY()) + parseInt(grp.getHeight());
+                // 取得選取範圍 x, y
+                var mousePos = stage.getPointerPosition();
+                if (mousePos){
+                  if ((mousePos.x >= grpStartX && mousePos.x <= grpEndX) && (mousePos.y >= grpStartY && mousePos.y <= grpEndY)) {
+                    // 如果陣列裡面沒有該物件
+                    if (aryTickets.indexOf(grp.getName()) < 0){
+                      aryTickets.push(grp.getName());
+                      // 取得起始位置，畫上 highlight
+                      var tmpX = parseInt(grp.getX());
+                      var tmpY = parseInt(grp.getY());
+                      var rectHighlight = new Kinetic.Rect({
+                        x: tmpX,
+                        y: tmpY,
+                        width: grp.getWidth(),
+                        height: grp.getHeight(),
+                        fill: selectedColor,
+                        stroke: selectedBorderColor,
+                        srokeWidth: selectedBorderWidth,
+                        name: 'highlight'
+                      });
+                      layer.add(rectHighlight);
+                      layer.draw();
+                    }
+                  }
+                }
+                
+              }
+            }
           }
+          
         });
         stage.getContent().addEventListener('mousedown', function(e){
-console.log('stage mousedown');
           if (aryTickets.length > 0) {
             var name = '';
 

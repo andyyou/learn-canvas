@@ -22,6 +22,9 @@
           width: 480px;
           height: 360px;
         }
+        canvas {
+          border: 1px solid red !important;
+        }
         .seats-container{
           position: relative;
         }
@@ -129,14 +132,18 @@
         var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
         // variable and global config
         var padding = [10, 10, 10, 10]; // top, right, bottom, left
-        var stageWidth = 480;
-        var stageHeight = 320;
-        var seatWidth = 20;
-        var seatHeight = 20;
-        var seatRow = 10;
-        var seatColumn = 24;
+        var stageWidth = 480;           // canvas 寬
+        var stageHeight = 320;          // canvas 高
+        var seatWidth = 20;             // 一個位置寬
+        var seatHeight = 20;            // 一個位置高
+        var seatRadius = 6;             // 預設位置為圓形，半徑設定。
+        var seatRow = 10;               // 最外層有多少列
+        var seatColumn = 24;            // 最外層多少行
         var seatTotalWidth = seatWidth * seatColumn;
         var seatTotalHeight = seatHeight * seatRow;
+        var seatsConfig = [];           // 用來暫存設定哪些座位。
+        var seatsUnconfigColor = '0,0,0,0.2'; // 座位的設定顏色方式統一只取 rgba(value) value 值。
+        var seatsUnconfigHighlight = '0,100,0,0.8'; // 座位的設定顏色方式統一只取 rgba(value) value 值。
 
         var scale = 1;
         var defaultScale = (seatTotalWidth >= seatTotalHeight) ? (stageWidth/seatTotalWidth) * 0.9 : (stageHeight/seatTotalHeight) * 0.9 ;
@@ -144,13 +151,19 @@
         var minScale = 0.3;
         var maxScale = 2.5;
         var hoverSeatId = '';
+    
+        var isDragging = false;
+        var isSelectBoxExists = false;
+        var isSelectBoxDrawing = false;
+        var rectSelectBox = null;
+        var rectSelectInitX = 0;
+        var rectSelectnitY = 0;
 
-        var dragging = false;
-        var rectSelectExists = false;
-        var rectSelect = null;
-        var rectSelectX = 0;
-        var rectSelectY = 0;
-        var rectSelectDrawing = false;
+        var rectSelectFill = 'rgba(0,0,0,0.2)';     // 選取方塊顏色
+        var rectSelectStroke = 'transparent';       // 選取方塊邊框顏色
+        var highlightFill = 'rgba(0,0,0,0.3)';      // 被選取座位高亮顏色
+        var highlightStroke = 'rgba(99,202,252,1)'; // 被選取座位高亮邊框顏色
+        var highlightStrokeWidth = 2;               // 被選取座位高亮邊框寬度
 
         // stage
         var stage = new Kinetic.Stage({
@@ -158,31 +171,33 @@
           width: stageWidth,
           height: stageHeight,
           scale: defaultScale,
-          x: defaultOffsetX
+          x: defaultOffsetX,
+          stroke: 'black'
         });
         
-
         // layers
-        var layer           = new Kinetic.Layer();
-        var layerTooltip    = new Kinetic.Layer();
+        var layer          = new Kinetic.Layer();
+        var layerSelection = new Kinetic.Layer();
+        var layerTooltip   = new Kinetic.Layer();
 
-
-        // objects of layer
+        // objects of layerSelection
         var rectBackground = new Kinetic.Rect({
           x: 0,
           y: 0,
           width: stage.getWidth(),
           height: stage.getHeight(),
           fill: 'transparent',
+          stroke: 'black',
           draggable: false,
           name: 'background'
         });
 
         rectBackground.on('mousedown', function(e) {
-          selecting = true;
-console.log('background mousedown');
+          isDragging = true;
         });
+        layerSelection.add(rectBackground);
 
+        // objects of layer
         var rectArena = new Kinetic.Rect({
           x: padding[1],
           y: stage.getHeight() - 80 - padding[2],
@@ -191,7 +206,6 @@ console.log('background mousedown');
           fill: 'rgba(0, 0, 0, 0.1)',
           cornerRadius: 5
         });
-
         var txtArena = new Kinetic.Text({
           x: stage.getWidth()/2,
           y: stage.getHeight()/3*2 + 50,
@@ -203,11 +217,10 @@ console.log('background mousedown');
           x: txtArena.getWidth()/2
         });
 
-        layer.add(rectBackground);
         layer.add(rectArena);
         layer.add(txtArena);
 
-        // seats coordinate
+        // seats coordinate 初始化座位表
         var seats = [
           {x:150, y:10}, 
           {x:170, y:10}, 
@@ -409,88 +422,58 @@ console.log('background mousedown');
           {x:450,  y:190},
           {x:470,  y:190}
         ];
-        var tickets = [];
         for (var i=0; i<seats.length; i++) {
           var seat = new Kinetic.Circle({
             id:       seats[i].id ? seats[i].id : i.toString(),
             name:     seats[i].name ? seats[i].id : i.toString(),
             sold:     seats[i].sold ? seats[i].sold : false,
             price:    seats[i].price ? seats[i].price : 0,
-            color:    seats[i].color ? seats[i].color : '11, 182, 114, 0.8', // rgba value
+            fill:     (!seats[i].color) ? 'rgba(' + seatsUnconfigColor + ')' : 'rgba(' + seats[i].color  + ')',
+            color:    null,
             x:        seats[i].x,
             y:        seats[i].y + 25, // offset y coordinate
-            radius:   6,
-            fill:     (seats[i].sold) ? 'rgba(100, 100, 100, 0.2)' : 'rgba(' + (seats[i].color ? seats[i].color : '11, 182, 114, 0.8') + ')',
+            radius:   seatRadius,
             checked:  false      // only for frontend
           });
-
-          seat.on('mouseover', function(evt){
+          seat.on('mouseover', function(e){
             // add tooltip
-            if (!this.attrs.sold) {
-              if (!this.attrs.checked) {
-                hoverSeatId = this.attrs.id;
-                tooltip.setPosition(this.attrs.x * scale, (this.attrs.y - 5) * scale );
-                tooltip.getText().setText(
-                                          this.attrs.id + 
-                                          '\n' + this.attrs.name + 
-                                          '\nNTD ' + this.attrs.price);
+            hoverSeatId = this.attrs.id;
+            tooltip.setPosition(this.attrs.x * scale, (this.attrs.y - 5) * scale );
+            tooltip.getText().setText(
+                                      this.attrs.id + 
+                                      '\n' + this.attrs.name + 
+                                      '\nNTD ' + this.attrs.price);
 
-                tooltip.show();
-                layerTooltip.batchDraw();
-                var rgba = this.attrs.color.split(',');
-                for (var i=0; i<rgba.length; i++) {
-                  rgba[i] = parseInt(rgba[i]);
-                }
-                // set brightness
-                rgba[3] = 1;
-                var masstone = rgba.indexOf(Math.max.apply(Math, rgba.slice(0,3)));
-                rgba[masstone] = 255;
-                this.attrs.fill = 'rgba(' + rgba.join(',') +')';
-                layer.batchDraw();
-                
-              } else {
-                hoverSeatId = '';
+            tooltip.show();
+            layerTooltip.batchDraw();
+
+            if (this.attrs.color) {
+              var rgba = this.attrs.color.split(',');
+              for (var i=0; i<rgba.length; i++) {
+                rgba[i] = parseInt(rgba[i]);
               }
-            } // end if (!this.attrs.sold)            
+              // set brightness
+              rgba[3] = 1;
+              var masstone = rgba.indexOf(Math.max.apply(Math, rgba.slice(0,3)));
+              rgba[masstone] = 255;
+              this.attrs.fill = 'rgba(' + rgba.join(',') +')';
+            } else {
+              this.attrs.fill = 'rgba(' + seatsUnconfigHighlight +')';
+            }      
+            layer.batchDraw();          
           });
 
           seat.on('mouseout', function() {
-            if (!this.attrs.sold && !this.attrs.checked) {
-              hoverSeatId = '';
-              tooltip.hide(); 
-              layerTooltip.batchDraw();
+            hoverSeatId = '';
+            tooltip.hide(); 
+            layerTooltip.batchDraw();
+            if (this.attrs.color) {
               this.attrs.fill = 'rgba(' + this.attrs.color + ')';
               this.attrs.stroke = null;
-              layer.batchDraw();
+            } else {
+              this.attrs.fill = 'rgba(' + seatsUnconfigColor +')';
             }
-          });
-
-          seat.on('click', function() {
-            if (!this.attrs.sold){
-              if (!this.attrs.checked && tickets.length < 10) {
-                this.attrs.fill = 'rgba(' + this.attrs.color + ')';
-                this.attrs.stroke = '#333'
-                this.attrs.checked = true;
-                // buy the ticket into cart
-                tickets.push({
-                  id: this.attrs.id,
-                  name: this.attrs.name,
-                  price: this.attrs.price
-                });
-              } else {
-                this.attrs.fill = 'rgba(11, 182, 114, 0.8)';
-                this.attrs.stroke = null;
-                this.attrs.checked = false;
-                // remove ticket from cart
-                for (var i=0; i < tickets.length; i++){
-                  if (tickets[i]['id'] === this.attrs.id)
-                  {
-                    tickets.splice(i, 1);
-                  }  
-                }
-              }
-              layer.draw();
-            }
+            layer.batchDraw();
           });
 
           layer.add(seat); // done, add seat to layer
@@ -524,29 +507,52 @@ console.log('background mousedown');
        
         
         // add layers to stage 
+        stage.add(layerSelection);
         stage.add(layer);
         stage.add(layerTooltip);
         // stage.add(layerDraggab);
 
         // **** stage events 
-        stage.getContainer().addEventListener('mousedown', function(){
-          document.body.style.cursor = 'all-scroll';
-        });
-        stage.getContainer().addEventListener('mouseup', function(){
-          document.body.style.cursor = 'default';
-          if (selecting) {
-            selecting = false;
-            
-            if (selectRectangle != null)
-              selectRectangle.remove();
+        stage.getContent().addEventListener('mousedown', function(e){
+          // document.body.style.cursor = 'all-scroll';
+          if (seatsConfig.length > 0) {
+            var name = '';
 
-            selectRectangle = null;
-            selectRectangleExists = false;
-            layer.batchDraw();
+            if (e.shape != undefined)
+              name = e.shape.attrs.name;
+
+            if (e.targetNode != undefined)
+              name = e.targetNode.attrs.name;
+
+            var seats = layer.get('.highlight');
+            while (seats.length > 0) {
+              seats[0].remove();
+              seats = layer.get('.highlight');
+            }
+            seatsConfig.length = 0;
           }
         });
-        stage.getContainer().addEventListener('mousemove', function(e) {
-          if(selecting){
+        stage.getContent().addEventListener('mouseup', function(e){
+          if (isDragging) {
+            isDragging = false;
+
+            // Get overlapped 取得重疊區塊
+            GetOverlapped(e);
+
+            if (rectSelectBox != null) {
+              rectSelectBox.remove();
+            }
+            rectSelectBox = null;
+            isSelectBoxExists = false;
+            
+          } else {
+            GetOverlappedOnClick(e);
+          }
+          layerSelection.draw();
+          layer.batchDraw();
+        });
+        stage.getContent().addEventListener('mousemove', function(e) {
+          if(isDragging){
             SetSelectionArea(e);
           }
         });
@@ -590,52 +596,126 @@ console.log('background mousedown');
         // functions
 
         var SetSelectionArea = function (e) {
-          if (selecting && !selectRectangleDrawing) {
-            selectRectangleDrawing = true;
-            var canvas = layer.getCanvas();
-            var mousepos = stage.getPointerPosition();
-            var x = mousepos.x;
-            var y = mousepos.y;
-            if (!selectRectangleExists) {
-              selectRectangleX = x;
-              selectRectangleY = y;
-              selectRectangle = new Kinetic.Rect({
-                x: selectRectangleX,
-                y: selectRectangleY,
+          if (isDragging && !isSelectBoxDrawing) {
+            isSelectBoxDrawing = true;
+            var mousePos = stage.getPointerPosition();
+console.log(scale);
+            var x = mousePos.x;
+            var y = mousePos.y;
+            if (!isSelectBoxExists) {
+              rectSelectInitX = x;
+              rectSelectInitY = y;
+              rectSelectBox = new Kinetic.Rect({
+                x: rectSelectInitX,
+                y: rectSelectInitY,
                 height: 1,
                 width: 1,
-                fill: 'rgba(0, 0, 0, 0.2)'
+                fill: rectSelectFill,
+                stroke: rectSelectStroke
               });
-              layer.add(selectRectangle);
-              layer.batchDraw();
-              selectRectangleExists = true;
+              layerSelection.add(rectSelectBox);
+              layerSelection.draw();
+              isSelectBoxExists = true;
             } else {
               var height = 0;
               var width  = 0;
               var newX   = 0;
               var newY   = 0;
 
-              if (x > selectRectangleX)
-                newX = selectRectangleX;
+              if (x > rectSelectInitX)
+                newX = rectSelectInitX;
               else
                 newX = x;
-              if (y > selectRectangleY)
-                newY = selectRectangleY;
+              if (y > rectSelectInitY)
+                newY = rectSelectInitY;
               else
                 newY = y;
 
-              var height = Math.abs(Math.abs(y) - Math.abs(initY));
-              var width = Math.abs(Math.abs(x) - Math.abs(initX));
-              selectRectangle.setHeight(height);
-              selectRectangle.setWidth(width);
-              selectRectangle.setX(newX);
-              selectRectangle.setY(newY);
-              layer.batchDraw();
+              height = Math.abs(Math.abs(y) - Math.abs(rectSelectInitY));
+              width = Math.abs(Math.abs(x) - Math.abs(rectSelectInitX));
+              rectSelectBox.setHeight(height);
+              rectSelectBox.setWidth(width);
+              rectSelectBox.setX(newX);
+              rectSelectBox.setY(newY);
+              layerSelection.draw();
             }
           }
-          selectRectangleDrawing = false;
+          isSelectBoxDrawing = false;
         }
+        var GetOverlapped = function(e) {
+          if (rectSelectBox == null)
+            return;
+          seatsConfig.length = 0;
+          rectSelectInitX = 0;
+          rectSelectInitY = 0;
 
+          var seats = layer.find('Circle');
+          for (var i = 0; i<seats.length; i++){
+            var seat = seats[i];
+            var pos = rectSelectBox.getAbsolutePosition();
+
+            var startX = parseInt(pos.x);
+            var endX = parseInt(pos.x) + parseInt(rectSelectBox.getWidth());
+            var startY = parseInt(pos.y);
+            var endY = parseInt(pos.y) + parseInt(rectSelectBox.getHeight());
+            // 取得物件的四點
+            var seatStartX = parseInt(seat.getX());
+            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getWidth());
+            var seatStartY = parseInt(seat.getY());
+            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getHeight());
+            // Compare 比對
+            if ((startX <= seatStartX && endX >= seatEndX) && (startY <= seatStartY && endY >= seatEndY)) {
+              if (seatsConfig.indexOf(seat.getId()) < 0) {
+                seatsConfig.push(seat.getId());
+                var tmpX = parseInt(seat.getX());
+                var tmpY = parseInt(seat.getY());
+                var highlight = new Kinetic.Circle({
+                  x: tmpX,
+                  y: tmpY,
+                  radius: seatRadius,
+                  fill: highlightFill,
+                  stroke: highlightStroke,
+                  strokeWidth: highlightStrokeWidth,
+                  name: 'highlight'
+                });
+                layer.add(highlight);
+              }
+            }
+          }
+        }
+        var GetOverlappedOnClick = function(e) {
+          seatsConfig.length = 0;
+          var seats = layer.find('Circle');
+          var mousePos = stage.getPointerPosition();
+
+          for (var i =0; i<seats.length; i++) {
+            var seat = seats[i];
+            // 取得物件的四點
+            var seatStartX = parseInt(seat.getX());
+            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getWidth());
+            var seatStartY = parseInt(seat.getY());
+            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getHeight());
+            if (mousePos) {
+              if ((mousePos.x >= seatStartX && mousePos.y <= seatEndX) && (mousePos.y >= seatStartY && mousePos.y <= seatEndY)) {
+                if (seatsConfig.indexOf(seat.getId()) < 0) {
+                  seatsConfig.push(seat.getId());
+                  var tmpX = parseInt(seat.getX());
+                  var tmpY = parseInt(seat.getY());
+                  var highlight = new Kinetic.Circle({
+                    x: tmpX,
+                    y: tmpY,
+                    radius: seatRadius,
+                    fill: highlightFill,
+                    stroke: highlightStroke,
+                    strokeWidth: highlightStrokeWidth,
+                    name: 'highlight'
+                  });
+                  layer.add(highlight);
+                }
+              }
+            }
+          }
+        }
         var Zoom = function(e) {
           var e = window.event || e 
           delta = e.detail ? e.detail*(-120) : e.wheelDelta;
