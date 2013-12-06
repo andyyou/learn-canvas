@@ -67,6 +67,11 @@
         var selectBoxInitX = 0;
         var selectBoxInitY = 0;
 
+        var boxColor = 'rgba(0,0,0,0.2)';
+        var boxBorderColor = 'transparent';
+        var selectedColor = 'rgba(0,0,0,0.3)';
+        var selectedBorderColor = 'rgba(99,202,252,1)';
+        var selectedBorderWidth = 2;
 
         // init stage and layer object  -----------------------------------------------------
         var stage = new Kinetic.Stage({
@@ -126,6 +131,28 @@
         // block.setAbsolutePosition(100, 100);
         // console.log(grp.getPosition());
         // console.log(block.getPosition());
+        grp.on('click', function(e) {
+          if (aryTickets.indexOf(this.getName()) < 0){
+            aryTickets.push(grp.getName());
+            var tmpX = parseInt(this.getX());
+            var tmpY = parseInt(this.getY());
+            var rectHighlight = new Kinetic.Rect({
+              x: tmpX,
+              y: tmpY,
+              width: this.getWidth(),
+              height: this.getHeight(),
+              fill: selectedColor,
+              stroke: selectedBorderColor,
+              srokeWidth: selectedBorderWidth,
+              name: 'highlight'
+            });
+            rectHighlight.on('click', function() {
+                layer.draw();
+            });
+            layer.add(rectHighlight);
+            layer.draw();
+          }
+        });
         layer.add(grp);
         // layer.draw(); // update need
         // 2
@@ -147,6 +174,28 @@
         });
         grp.add(block);
         // block.setAbsolutePosition(150, 10);
+        grp.on('click', function(e) {
+          if (aryTickets.indexOf(this.getName()) < 0){
+            aryTickets.push(grp.getName());
+            var tmpX = parseInt(this.getX());
+            var tmpY = parseInt(this.getY());
+            var rectHighlight = new Kinetic.Rect({
+              x: tmpX,
+              y: tmpY,
+              width: this.getWidth(),
+              height: this.getHeight(),
+              fill: selectedColor,
+              stroke: selectedBorderColor,
+              srokeWidth: selectedBorderWidth,
+              name: 'highlight'
+            });
+            rectHighlight.on('click', function() {
+                layer.draw();
+            });
+            layer.add(rectHighlight);
+            layer.draw();
+          }
+        });
         layer.add(grp);
         // layer.draw();
         // 3
@@ -167,6 +216,28 @@
           fill: 'blue'
         });
         grp.add(block);
+        grp.on('click', function(e) {
+          if (aryTickets.indexOf(this.getName()) < 0){
+            aryTickets.push(grp.getName());
+            var tmpX = parseInt(this.getX());
+            var tmpY = parseInt(this.getY());
+            var rectHighlight = new Kinetic.Rect({
+              x: tmpX,
+              y: tmpY,
+              width: this.getWidth(),
+              height: this.getHeight(),
+              fill: selectedColor,
+              stroke: selectedBorderColor,
+              srokeWidth: selectedBorderWidth,
+              name: 'highlight'
+            });
+            rectHighlight.on('click', function() {
+                layer.draw();
+            });
+            layer.add(rectHighlight);
+            layer.draw();
+          }
+        });
         layer.add(grp);
         // layer.draw();
 
@@ -230,7 +301,8 @@
                   y: selectBoxInitY,
                   width: 1,
                   height: 1,
-                  fill: 'rgba(0,0,0,0.2)'
+                  fill: boxColor,
+                  stroke: boxBorderColor
                 });
                 layer.add(rectSelectBox);
                 layer.draw();
@@ -261,19 +333,20 @@
           }
         });
         stage.getContent().addEventListener('mouseup', function(e) {
+console.log('stage mouseup');
           if (isDragging) {
             isDragging = false;
             // Get overlapped 取得重疊區塊
-            if (rectSelectBox == null) // 如果選取區塊為空就不做事
-              return;
-            // var rangeWidth = -1000;
-            // var rangeHeight = 0;
-            aryTickets.length = 0;
-            selectBoxInitX = 10;
-            selectBoxInitY = 10;
+            if (rectSelectBox != null) { // 如果選取區塊為空就不做事
 
-            var aryGroups = layer.getChildren(); // 統一取得所有子元素 group
-            for(var i = 0; i<aryGroups.length; i++) {
+              // var rangeWidth = -1000;
+              // var rangeHeight = 0;
+              aryTickets.length = 0;
+              selectBoxInitX = 10;
+              selectBoxInitY = 10;
+  
+              var aryGroups = layer.getChildren(); // 統一取得所有子元素 group
+              for(var i = 0; i<aryGroups.length; i++) {
               var grp = aryGroups[i];
               // exclude selectbox and button etc... 排除作用的物件只剩可以被選取的物件
               if (grp.attrs.name != rectSelectBox.attrs.name &&
@@ -307,14 +380,18 @@
                       y: tmpY,
                       width: grp.getWidth(),
                       height: grp.getHeight(),
-                      fill: 'rgba(0,0,255,0.1)',
-                      stroke: 'rgba(0,0,0,0.5)',
-                      srokeWidth: 1,
+                      fill: selectedColor,
+                      stroke: selectedBorderColor,
+                      srokeWidth: selectedBorderWidth,
                       name: 'highlight'
+                    });
+                    rectHighlight.on('click', function(e) {
+                      layer.draw();
                     });
                     layer.add(rectHighlight)
                   }
                 } 
+              }
               }
             }
             // ↑↑↑↑↑↑↑ 重疊處理完畢 ，接著移除選取方塊。✚✚✚✚
@@ -327,10 +404,9 @@
             isSelectBoxExists = false;
             layer.draw();
           }
-console.log('mouseup');
         });
         stage.getContent().addEventListener('mousedown', function(e){
-console.log('mousedown');
+console.log('stage mousedown');
           if (aryTickets.length > 0) {
             var name = '';
 
@@ -342,9 +418,7 @@ console.log('mousedown');
 
             if(name != 'btn')
             {
-
               var aryHighlights = layer.get('.highlight');
-console.dir(aryHighlights);
               while(aryHighlights.length > 0){
                 aryHighlights[0].remove();
                 aryHighlights = layer.get('.highlight');
@@ -352,7 +426,7 @@ console.dir(aryHighlights);
               aryTickets.length = 0;
             }
           }
-        })
+        });
         // -----------------------------------------------------
         // -----------------------------------------------------
 
