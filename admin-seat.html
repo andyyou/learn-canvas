@@ -193,7 +193,11 @@
         });
 
         rectBackground.on('mousedown', function(e) {
-          isDragging = true;
+console.log('background mousedown')
+          if (!e.shiftKey) {
+            isDragging = true;
+          } 
+          
         });
         layerSelection.add(rectBackground);
 
@@ -513,8 +517,13 @@
         // stage.add(layerDraggab);
 
         // **** stage events 
-        stage.getContent().addEventListener('mousedown', function(e){
+        stage.getContainer().addEventListener('mousedown', function(e){
           // document.body.style.cursor = 'all-scroll';
+          if (e.shiftKey) {
+            stage.setDraggable(true);
+          } else {
+            stage.setDraggable(false);
+          }
           if (seatsConfig.length > 0) {
             var name = '';
 
@@ -532,7 +541,8 @@
             seatsConfig.length = 0;
           }
         });
-        stage.getContent().addEventListener('mouseup', function(e){
+        stage.getContainer().addEventListener('mouseup', function(e){
+
           if (isDragging) {
             isDragging = false;
 
@@ -551,7 +561,8 @@
           layerSelection.draw();
           layer.batchDraw();
         });
-        stage.getContent().addEventListener('mousemove', function(e) {
+        stage.getContainer().addEventListener('mousemove', function(e) {
+
           if(isDragging){
             SetSelectionArea(e);
           }
@@ -600,8 +611,8 @@
             isSelectBoxDrawing = true;
             var mousePos = stage.getPointerPosition();
 console.log(scale);
-            var x = mousePos.x;
-            var y = mousePos.y;
+            var x = mousePos.x/defaultScale - stage.getAbsolutePosition().x;
+            var y = mousePos.y/defaultScale - stage.getAbsolutePosition().y;
             if (!isSelectBoxExists) {
               rectSelectInitX = x;
               rectSelectInitY = y;
@@ -654,10 +665,10 @@ console.log(scale);
             var seat = seats[i];
             var pos = rectSelectBox.getAbsolutePosition();
 
-            var startX = parseInt(pos.x);
-            var endX = parseInt(pos.x) + parseInt(rectSelectBox.getWidth());
-            var startY = parseInt(pos.y);
-            var endY = parseInt(pos.y) + parseInt(rectSelectBox.getHeight());
+            var startX = parseInt(pos.x/defaultScale - stage.getAbsolutePosition().x);
+            var endX = parseInt(pos.x/defaultScale - stage.getAbsolutePosition().x) + parseInt(rectSelectBox.getWidth());
+            var startY = parseInt(pos.y/defaultScale - stage.getAbsolutePosition().y);
+            var endY = parseInt(pos.y/defaultScale - stage.getAbsolutePosition().y) + parseInt(rectSelectBox.getHeight());
             // 取得物件的四點
             var seatStartX = parseInt(seat.getX() - seat.getRadius());
             var seatEndX = parseInt(seat.getX()) + parseInt(seat.getRadius());
