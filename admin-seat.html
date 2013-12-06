@@ -659,10 +659,10 @@ console.log(scale);
             var startY = parseInt(pos.y);
             var endY = parseInt(pos.y) + parseInt(rectSelectBox.getHeight());
             // 取得物件的四點
-            var seatStartX = parseInt(seat.getX());
-            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getWidth());
+            var seatStartX = parseInt(seat.getX() - seat.getRadius());
+            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getRadius());
             var seatStartY = parseInt(seat.getY());
-            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getHeight());
+            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getRadius());
             // Compare 比對
             if ((startX <= seatStartX && endX >= seatEndX) && (startY <= seatStartY && endY >= seatEndY)) {
               if (seatsConfig.indexOf(seat.getId()) < 0) {
@@ -691,10 +691,10 @@ console.log(scale);
           for (var i =0; i<seats.length; i++) {
             var seat = seats[i];
             // 取得物件的四點
-            var seatStartX = parseInt(seat.getX());
-            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getWidth());
+            var seatStartX = parseInt(seat.getX() - seat.getRadius());
+            var seatEndX = parseInt(seat.getX()) + parseInt(seat.getRadius());
             var seatStartY = parseInt(seat.getY());
-            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getHeight());
+            var seatEndY = parseInt(seat.getY()) + parseInt(seat.getRadius());
             if (mousePos) {
               if ((mousePos.x >= seatStartX && mousePos.y <= seatEndX) && (mousePos.y >= seatStartY && mousePos.y <= seatEndY)) {
                 if (seatsConfig.indexOf(seat.getId()) < 0) {

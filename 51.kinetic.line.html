@@ -94,9 +94,16 @@
         greenLine.move(0, 55);
         blueLine.move(0, 105);
 
+        var circle = new Kinetic.Circle({
+          x:0,
+          y:0,
+          radius: 20,
+          fill: 'red'
+        });
         layer.add(redLine);
         layer.add(greenLine);
         layer.add(blueLine);
+        layer.add(circle);
         stage.add(layer);
         </script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
