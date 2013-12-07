@@ -828,8 +828,8 @@ console.log('endCalcY: (pageY - canvasPos.y) - nowScale*smallCalcY= ' + endCalcY
 
             if (!anim || !anim.isRunning()){
               var endScale = scale + 0.1875 >= maxScale ? maxScale : scale + 0.1875;
-              var widthScale = (layer.getWidth() * 1.1875 - layer.getWidth()) / 2;
-              var heightScale = (layer.getHeight() * 1.1875 - layer.getHeight()) / 2;
+              var widthScale = (stage.getWidth() * 1.1875 - stage.getWidth()) / 2;
+              var heightScale = (stage.getHeight() * 1.1875 - stage.getHeight()) / 2;
   
               anim = new Kinetic.Animation(function(frame) {
                 if (scale == endScale) {
@@ -864,8 +864,8 @@ console.log('endCalcY: (pageY - canvasPos.y) - nowScale*smallCalcY= ' + endCalcY
           $('#zoomOut').click(function(e){
             if (!anim || !anim.isRunning()){
               var endScale = scale - 0.1875 <= minScale ? minScale : scale - 0.1875;
-              var widthScale = (layer.getWidth() * 1.1875 - layer.getWidth()) / 2;
-              var heightScale = (layer.getHeight() * 1.1875 - layer.getHeight()) / 2;
+              var widthScale = (stage.getWidth() * 1.1875 - stage.getWidth()) / 2;
+              var heightScale = (stage.getHeight() * 1.1875 - stage.getHeight()) / 2;
   
               anim = new Kinetic.Animation(function(frame) {
                 if (scale == endScale) {
