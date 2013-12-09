@@ -581,14 +581,6 @@
             // Get overlapped 取得重疊區塊
             GetOverlapped(e);
 
-            // Popup a modal for set ticket with seat
-            if (seatsConfig.length > 0) {
-              $('.zoom-divider, .zoom-setting').removeClass('zoom-hidden');
-            } else {
-              $('#zoomSetting').addClass('zoom-hidden');
-              $('#zoomSetting').prev('.zoom-divider').addClass('zoom-hidden');
-            }
-            
             // Clear select box
             if (rectSelectBox != null) {
               rectSelectBox.remove();
@@ -596,6 +588,13 @@
             rectSelectBox = null;
             isSelectBoxExists = false;
             
+          }
+          // Popup a modal for set ticket with seat
+          if (seatsConfig.length > 0) {
+            $('.zoom-divider, .zoom-setting').removeClass('zoom-hidden');
+          } else {
+            $('#zoomSetting').addClass('zoom-hidden');
+            $('#zoomSetting').prev('.zoom-divider').addClass('zoom-hidden');
           }
           layerSelection.draw();
           layer.batchDraw();
