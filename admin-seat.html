@@ -148,7 +148,7 @@
         var scale = 1;
         var defaultScale = (seatTotalWidth >= seatTotalHeight) ? (stageWidth/seatTotalWidth) * 0.9 : (stageHeight/seatTotalHeight) * 0.9 ;
         var defaultOffsetX = (stageWidth - seatTotalWidth * defaultScale)/2; // for stage align center
-        var minScale = 0.3;
+        var minScale = 0.25;
         var maxScale = 2.5;
         var hoverSeatId = '';
     
@@ -172,8 +172,7 @@
           height: stageHeight,
           scale: defaultScale,
           draggable: false,
-          x: defaultOffsetX,
-          stroke: 'black'
+          x: defaultOffsetX
         });
         
         // layers
@@ -188,7 +187,7 @@
           width: stage.getWidth(),
           height: stage.getHeight(),
           fill: 'transparent',
-          stroke: 'black',
+          stroke: 'blue',
           draggable: false,
           name: 'background'
         });
@@ -222,6 +221,15 @@
 
         layer.add(rectArena);
         layer.add(txtArena);
+
+        // layer.on('mousedown' ,function(e){
+        //   if (e.shiftKey){
+        //     layer.startDrag();
+        //   }
+        // });
+        // layer.on('mouseup', function(e) {
+        //   layer.stopDrag();
+        // })
 
         // seats coordinate 初始化座位表
         var seats = [
@@ -604,44 +612,48 @@
           if (isSelecting && !isSelectBoxDrawing) {
             isSelectBoxDrawing = true;
             var mousePos = stage.getPointerPosition();
-            var x = mousePos.x/defaultScale - stage.getAbsolutePosition().x;
-            var y = mousePos.y/defaultScale - stage.getAbsolutePosition().y;
-            if (!isSelectBoxExists) {
-              rectSelectInitX = x;
-              rectSelectInitY = y;
-              rectSelectBox = new Kinetic.Rect({
-                x: rectSelectInitX,
-                y: rectSelectInitY,
-                height: 1,
-                width: 1,
-                fill: rectSelectFill,
-                stroke: rectSelectStroke
-              });
-              layerSelection.add(rectSelectBox);
-              layerSelection.draw();
-              isSelectBoxExists = true;
-            } else {
-              var height = 0;
-              var width  = 0;
-              var newX   = 0;
-              var newY   = 0;
-
-              if (x > rectSelectInitX)
-                newX = rectSelectInitX;
-              else
-                newX = x;
-              if (y > rectSelectInitY)
-                newY = rectSelectInitY;
-              else
-                newY = y;
-
-              height = Math.abs(Math.abs(y) - Math.abs(rectSelectInitY));
-              width = Math.abs(Math.abs(x) - Math.abs(rectSelectInitX));
-              rectSelectBox.setHeight(height);
-              rectSelectBox.setWidth(width);
-              rectSelectBox.setX(newX);
-              rectSelectBox.setY(newY);
-              layerSelection.draw();
+            if (mousePos) {
+              var x = (mousePos.x) ? mousePos.x/defaultScale - stage.getAbsolutePosition().x : stage.getX() + stage.getWidth();
+              var y = (mousePos.y) ? mousePos.y/defaultScale - stage.getAbsolutePosition().y : stage.getY() + stage.getHeight();
+              if (!isSelectBoxExists) {
+                rectSelectInitX = x;
+                rectSelectInitY = y;
+                rectSelectBox = new Kinetic.Rect({
+                  x: rectSelectInitX,
+                  y: rectSelectInitY,
+                  height: 1,
+                  width: 1,
+                  fill: rectSelectFill,
+                  stroke: rectSelectStroke
+                });
+                layerSelection.add(rectSelectBox);
+                layerSelection.draw();
+                isSelectBoxExists = true;
+              } else {
+                var height = 0;
+                var width  = 0;
+                var newX   = 0;
+                var newY   = 0;
+  
+                if (x > rectSelectInitX)
+                  newX = rectSelectInitX;
+                else
+                  newX = x;
+                if (y > rectSelectInitY)
+                  newY = rectSelectInitY;
+                else
+                  newY = y;
+  
+                height = Math.abs(Math.abs(y) - Math.abs(rectSelectInitY));
+                width = Math.abs(Math.abs(x) - Math.abs(rectSelectInitX));
+                rectSelectBox.setHeight(height);
+                rectSelectBox.setWidth(width);
+                rectSelectBox.setX(newX);
+                rectSelectBox.setY(newY);
+                layerSelection.draw();
+              } 
+            
+            
             }
           }
           isSelectBoxDrawing = false;
@@ -899,12 +911,12 @@ console.log('endCalcY: (pageY - canvasPos.y) - nowScale*smallCalcY= ' + endCalcY
           $(document).on('keydown', function(e){
             if (e.shiftKey) {
               document.body.style.cursor = 'all-scroll';
-              stage.startDrag();
+              layer.startDrag();
             }
           });
           $(document).on('keyup', function(e) {
             document.body.style.cursor = 'default';
-            stage.stopDrag();
+            layer.stopDrag();
           });
         });
 
