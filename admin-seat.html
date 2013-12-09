@@ -5,26 +5,22 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>Admin Seats</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/semantic.min.css">
         <style>
-        body{
-          padding-top: 60px;
-        }
+      
         #container{
           border: 1px solid #000;
           width: 480px;
           height: 360px;
         }
-        canvas {
-          border: 1px solid red !important;
-        }
+      
         .seats-container{
           position: relative;
         }
@@ -79,7 +75,12 @@
           z-index: 3;
         }
         
-        
+        #testui{
+          border: 1px solid gray;
+        }
+        .column{
+          border: 1px solid red;
+        }
         </style>
         <script src="js/modernizr.min.js"></script>
         <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>-->
@@ -90,24 +91,12 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <!-- Add your site or application content here -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">ICE</a>
-            </div>
-            <div class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
-                <li><a href="#about">About</a></li>
-              </ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </div><!--/.navbar -->
+        <div class='ui menu'>
+          <a class='active item'>Home</a>
+          <a class='item'>Link</a>
+          <a class='item'>Link</a>
+          
+        </div>
 
         <div class="container">
           <h1>座位表系統 - 管理</h1>
@@ -123,10 +112,31 @@
             </div>
           </div>
         </div>
-
+        <!-- Config block of Seats
+        -->
+        <div class="ui small modal">
+          <i class="close icon"></i>
+          <div class="header">
+            設置座位屬性
+          </div>
+          <div class="content">
+            <div class="ui dropdown">
+              <div class="text">選擇票種</div>
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="item" data-value="option1">一般票</div>
+                <div class="item" data-value="option2">貴賓票</div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <div class="ui button">取消</div>
+            <div class="ui button">確認</div>
+          </div>
+        </div>
         <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
         <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script src="js/semantic.min.js"></script>
         <script src='js/kinetic-v4.7.4.min.js'></script>
         <script>
         var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
@@ -823,7 +833,6 @@
               
               anim.start();
             }
-            
           });
 
           $('#zoomIn').click(function(e){
@@ -860,7 +869,6 @@
               
               anim.start();
             } 
-            
           });
 
           $('#zoomOut').click(function(e){
@@ -923,9 +931,18 @@
               isDraggable = true;
             }
           });
+
           $(document).on('keyup', function(e) {
             isDraggable = false;
           });
+
+          $('.ui.modal').modal('setting', {
+            onApprove: function(){
+              console.log('Approved');
+            }
+          }).modal('show');
+          $('.ui .dropdown').dropdown();
+console.log($('.ui .dropdown').dropdown('get value'));
         });
 
         
