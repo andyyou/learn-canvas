@@ -145,8 +145,9 @@
         var seatsUnconfigColor = '0,0,0,0.2'; // 座位的設定顏色方式統一只取 rgba(value) value 值。
         var seatsUnconfigHighlight = '0,100,0,0.8'; // 座位的設定顏色方式統一只取 rgba(value) value 值。
 
-        var scale = 1;
+        
         var defaultScale = (seatTotalWidth >= seatTotalHeight) ? (stageWidth/seatTotalWidth) * 0.9 : (stageHeight/seatTotalHeight) * 0.9 ;
+        var scale = defaultScale;
         var defaultOffsetX = (stageWidth - seatTotalWidth * defaultScale)/2; // for stage align center
         var minScale = 0.25;
         var maxScale = 2.5;
@@ -456,7 +457,7 @@
           seat.on('mouseover', function(e){
             // add tooltip
             hoverSeatId = this.attrs.id;
-            tooltip.setPosition(this.attrs.x * scale, (this.attrs.y - 5) * scale );
+            tooltip.setPosition(this.getAbsolutePosition().x, (this.getAbsolutePosition().y - 6) );
             tooltip.getText().setText(
                                       this.attrs.id + 
                                       '\n' + this.attrs.name + 
@@ -582,14 +583,16 @@
             // fixed when cursor on seat and wheel
             if (hoverSeatId) {
               var seat = stage.find('#' + hoverSeatId)[0];
-              if (!seat.attrs.sold && !seat.attrs.checked) {
-                tooltip.hide(); 
-                layerTooltip.draw();
+              tooltip.hide(); 
+              layerTooltip.draw();
+              if (seat.attrs.color) {
                 seat.attrs.fill = 'rgba(' + seat.attrs.color + ')';
+                seat.attrs.stroke = null;
+              } else {
+                seat.attrs.fill = 'rgba(' + seatsUnconfigColor +')';
                 seat.attrs.stroke = null;
               }
             }
-            
             Zoom(e);
           });
         } else if (document.addEventListener) {
@@ -597,14 +600,16 @@
             // fixed when cursor on seat and wheel
             if (hoverSeatId) {
               var seat = stage.find('#' + hoverSeatId)[0];
-              if (!seat.attrs.sold && !seat.attrs.checked) {
-                tooltip.hide(); 
-                layerTooltip.draw();
+              tooltip.hide(); 
+              layerTooltip.draw();
+              if (seat.attrs.color) {
                 seat.attrs.fill = 'rgba(' + seat.attrs.color + ')';
+                seat.attrs.stroke = null;
+              } else {
+                seat.attrs.fill = 'rgba(' + seatsUnconfigColor +')';
                 seat.attrs.stroke = null;
               }
             }
-            
             Zoom(e);
           });
         }
@@ -683,6 +688,8 @@
             var startY = parseInt(pos.y/defaultScale - stage.getAbsolutePosition().y);
             var endY = parseInt(pos.y/defaultScale - stage.getAbsolutePosition().y) + parseInt(rectSelectBox.getHeight());
             // 取得物件的四點
+console.log(seat.getX());
+console.log(seat.getAbsolutePosition());
             var seatStartX = parseInt(seat.getX() - seat.getRadius());
             var seatEndX = parseInt(seat.getX()) + parseInt(seat.getRadius());
             var seatStartY = parseInt(seat.getY());
