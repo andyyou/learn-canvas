@@ -717,33 +717,22 @@
         }
         var GetOverlappedOnRectNull = function(e) {
           seatsConfig.length = 0;
-          var seats = layer.find('Circle');
-          var mousePos = stage.getPointerPosition();
-          for (var i =0; i<seats.length; i++) {
-            var seat = seats[i];
-            // 取得物件的四點
-            var seatStartX = parseInt(seat.getAbsolutePosition().x - seat.getRadius());
-            var seatEndX = parseInt(seat.getAbsolutePosition().x ) + parseInt(seat.getRadius());
-            var seatStartY = parseInt(seat.getAbsolutePosition().y - seat.getRadius());
-            var seatEndY = parseInt(seat.getAbsolutePosition().y) + parseInt(seat.getRadius());
-            if (mousePos) {
-              if ((mousePos.x >= seatStartX && mousePos.x <= seatEndX) && (mousePos.y >= seatStartY && mousePos.y <= seatEndY)) {
-                if (seatsConfig.indexOf(seat.getId()) < 0) {
-                  seatsConfig.push(seat.getId());
-                  var tmpX = parseInt(seat.getX());
-                  var tmpY = parseInt(seat.getY());
-                  var highlight = new Kinetic.Circle({
-                    x: tmpX,
-                    y: tmpY,
-                    radius: seatRadius,
-                    fill: highlightFill,
-                    stroke: highlightStroke,
-                    strokeWidth: highlightStrokeWidth,
-                    name: 'highlight'
-                  });
-                  layer.add(highlight);
-                }
-              }
+          if (hoverSeatId) {
+            var seat = e.targetNode;
+            if (seatsConfig.indexOf(seat.getId()) < 0) {
+              seatsConfig.push(seat.getId());
+              var tmpX = parseInt(seat.getX());
+              var tmpY = parseInt(seat.getY());
+              var highlight = new Kinetic.Circle({
+                x: tmpX,
+                y: tmpY,
+                radius: seatRadius,
+                fill: highlightFill,
+                stroke: highlightStroke,
+                strokeWidth: highlightStrokeWidth,
+                name: 'highlight'
+              });
+              layer.add(highlight);
             }
           }
         }
