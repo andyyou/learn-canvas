@@ -329,14 +329,24 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
           seat.on('mouseover', function(e){
             // add tooltip
             hoverSeatId = this.attrs.id;
-            tooltip.setPosition(this.getAbsolutePosition().x, (this.getAbsolutePosition().y - 6) );
-            tooltip.getText().setText(
-                                      this.attrs.id + 
-                                      '\n' + this.attrs.name + 
-                                      '\nNTD ' + this.attrs.price);
 
+            tooltip.getText().setText(this.attrs.id + '\n' + this.attrs.name + '\nNTD ' + this.attrs.price);
+            
+            if (this.getAbsolutePosition().x +  tooltip.getWidth() > stage.getWidth()) {
+              // UNDONE
+              tooltip.getTag().setPointerDirection('right');
+            } else if (this.getAbsolutePosition().x - tooltip.getWidth() < stage.getX()) {
+              tooltip.getTag().setPointerDirection('left');
+            } else {
+              tooltip.getTag().setPointerDirection('down');
+            }
+
+            tooltip.setPosition(this.getAbsolutePosition().x, this.getAbsolutePosition().y);
+            // for fix wrong position firsttime.
+            tooltip.getText().setText(this.attrs.id + '\n' + this.attrs.name + '\nNTD ' + this.attrs.price);
+            
             tooltip.show();
-            layerTooltip.batchDraw();
+            tooltip.getLayer().draw();
 
             if (this.attrs.color) {
               var rgba = this.attrs.color.split(',');
@@ -781,7 +791,6 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
             $('.ui.modal').modal({
               debug: false,
               onApprove: function(){
-                console.log(seatsConfig);
                 var index = parseInt($('.ui.dropdown').dropdown('get value')) - 1;
                 if (index >= 0) {
                   for (var i = 0; i<seatsConfig.length; i++) {
