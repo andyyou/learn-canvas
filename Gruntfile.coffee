@@ -112,12 +112,22 @@ module.exports = (grunt) ->
     #  'dest' : 'src'
       options:
         banner: '<%= banner %>',
-        mangle: false
+        mangle: false,
+        dead_code: true
       # dist:
       #   'dest' : 'src'
       modernizr:
         files:
           'js/modernizr.min.js' : 'bower_components/modernizr/modernizr.js'
+      seat:
+        options:
+          beautify: false
+        compress:
+          options:
+            dead_code: true
+        files:
+          'js/seatadmin.min.js' : 'js/seatadmin.js',
+          'js/seatuser.min.js' : 'js/seatuser.js'
     #============================================================================================================================
     # TEST                                                        
     #============================================================================================================================
