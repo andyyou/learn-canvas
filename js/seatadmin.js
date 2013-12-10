@@ -310,7 +310,7 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
           {x:470,  y:190, id: '1-21'}
         ];
         var tickets = [
-          {price: 100, name: '一般票', sold: false, color: '0, 200, 100, 0.8'},
+          {price: 100, name: '一般票', sold: false, color: '0, 200, 0, 0.8'},
           {price: 999, name: '貴賓票', sold: false, color: '0, 0, 200, 0.8'}
         ];
         for (var i=0; i<seats.length; i++) {
@@ -783,11 +783,12 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
               onApprove: function(){
                 console.log(seatsConfig);
                 var index = parseInt($('.ui.dropdown').dropdown('get value')) - 1;
-                if (index) {
+                if (index >= 0) {
                   for (var i = 0; i<seatsConfig.length; i++) {
                     var seat = layer.find('#' + seatsConfig[i])[0];
                     seat.setAttr('price', tickets[index].price);
                     seat.setAttr('color', tickets[index].color);
+                    seat.setAttr('fill', 'rgba(' + tickets[index].color + ')');
                     seat.setAttr('name', tickets[index].name);
                     seat.setAttr('sold', tickets[index].sold);
                   }
@@ -799,7 +800,6 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
                     }
                     seatsConfig.length = 0;
                   }
-                  console.log('done');
                   layer.batchDraw();
                 }
               }
