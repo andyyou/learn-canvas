@@ -126,8 +126,8 @@ module.exports = (grunt) ->
           options:
             dead_code: true
         files:
-          'js/seatadmin.min.js' : 'js/seatadmin.js',
-          'js/seatuser.min.js' : 'js/seatuser.js'
+          'js/seatadmin.min.js' : 'js/seatadmin_origin.js',
+          'js/seatuser.min.js' : 'js/seatuser_origin.js'
     #============================================================================================================================
     # TEST                                                        
     #============================================================================================================================

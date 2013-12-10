@@ -330,21 +330,8 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
             // add tooltip
             hoverSeatId = this.attrs.id;
 
-            tooltip.getText().setText(this.attrs.id + '\n' + this.attrs.name + '\nNTD ' + this.attrs.price);
-            
-            if (this.getAbsolutePosition().x +  tooltip.getWidth() > stage.getWidth()) {
-              // UNDONE
-              tooltip.getTag().setPointerDirection('right');
-            } else if (this.getAbsolutePosition().x - tooltip.getWidth() < stage.getX()) {
-              tooltip.getTag().setPointerDirection('left');
-            } else {
-              tooltip.getTag().setPointerDirection('down');
-            }
-
             tooltip.setPosition(this.getAbsolutePosition().x, this.getAbsolutePosition().y);
-            // for fix wrong position firsttime.
             tooltip.getText().setText(this.attrs.id + '\n' + this.attrs.name + '\nNTD ' + this.attrs.price);
-            
             tooltip.show();
             tooltip.getLayer().draw();
 

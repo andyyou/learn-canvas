@@ -19,7 +19,10 @@
           width: 480px;
           height: 360px;
         }
-      
+        .container{
+          width: 90%;
+          
+        }
         .seats-container{
           position: relative;
         }
@@ -104,7 +107,7 @@
         </div>
 
         <div class="container">
-          <h1>座位表系統 - 管理界面 Semantic Example</h1>
+          <h1>座位表系統 - 管理界面 Semantic Example <div class='ui label'>Shift + Click 拖移</div></h1>
           <div class='seats-container'>
             <div id="container"></div>
   
@@ -117,6 +120,7 @@
               <div class='zoom-divider zoom-hidden'></div>
               <div class="zoom-btn zoom-setting zoom-hidden" id='zoomSetting'></div>
             </div>
+
           </div>
         </div>
         <!-- Config block of Seats
@@ -145,7 +149,7 @@
         <script src="js/jquery.min.js"></script>
         <script src="js/semantic.min.js"></script>
         <script src='js/kinetic-v4.7.4.min.js'></script>
-        <script src='js/seatadmin.js'></script>
+        <script src='js/seatadmin.min.js'></script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
