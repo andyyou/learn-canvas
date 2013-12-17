@@ -338,6 +338,8 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
 
           seat.on('click', function() {
             if (!this.attrs.sold ){
+              tooltip.hide(); 
+              layerTooltip.batchDraw();
               if (!this.attrs.checked && tickets.length < 10) {
                 this.attrs.fill = 'rgba(' + this.attrs.color + ')';
                 this.attrs.stroke = '#333'
