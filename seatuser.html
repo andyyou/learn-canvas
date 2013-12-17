@@ -18,7 +18,9 @@
           padding-top: 60px;
         }
         #container{
-          border: 1px solid #000;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          float:left;
           width: 480px;
           height: 360px;
         }
@@ -75,6 +77,14 @@
           transition-timing-function: ease-out;
           width: 18px;
           z-index: 3;
+        }
+
+        .seat-preview {
+          border-radius: 8px;
+          width:480px;
+          float: left;
+          margin-left:20px;
+          padding: 5px;
         }
         /*.toolbar-zoombar{
           z-index: 1 !important;
@@ -147,6 +157,11 @@
               <div class='zoom-btn zoom-plus' id='zoomIn'></div>
               <div class='zoom-divider'></div>
               <div class="zoom-btn zoom-minus" id='zoomOut'></div>
+            </div>
+
+            <div class='seat-preview' id='seatPreview'>
+              <div class='label label-default'>Preview</div>
+              <img src='images/seats/1.jpg' class="img-rounded img-responsive">
             </div>
           </div>
         </div>

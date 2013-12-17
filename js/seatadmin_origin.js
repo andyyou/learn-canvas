@@ -310,6 +310,7 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
           {x:470,  y:190, id: '1-21'}
         ];
         var tickets = [
+          {price: 10, name: '保留位', sold: false, color: '0, 0, 0, 0.8'},
           {price: 100, name: '一般票', sold: false, color: '0, 200, 0, 0.8'},
           {price: 999, name: '貴賓票', sold: false, color: '0, 0, 200, 0.8'}
         ];
@@ -441,10 +442,12 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
           }
           // Popup a modal for set ticket with seat
           if (seatsConfig.length > 0) {
-            $('.zoom-divider, .zoom-setting').removeClass('zoom-hidden');
+            $('.zoom-divider, .zoom-setting, .zoom-reset').removeClass('zoom-hidden');
           } else {
             $('#zoomSetting').addClass('zoom-hidden');
             $('#zoomSetting').prev('.zoom-divider').addClass('zoom-hidden');
+            $('#zoomReset').addClass('zoom-hidden');
+            $('#zoomReset').prev('.zoom-divider').addClass('zoom-hidden');
           }
           layerSelection.draw();
           layer.batchDraw();
@@ -778,7 +781,7 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
             $('.ui.modal').modal({
               debug: false,
               onApprove: function(){
-                var index = parseInt($('.ui.dropdown').dropdown('get value')) - 1;
+                var index = Number($('.ui.dropdown').dropdown('get value')) - 1;
                 if (index >= 0) {
                   for (var i = 0; i<seatsConfig.length; i++) {
                     var seat = layer.find('#' + seatsConfig[i])[0];
@@ -800,7 +803,27 @@ var mousewheel=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mouse
                 }
               }
             }).modal('show');
-          })
+          });
+          
+          $('#zoomReset').click(function (e) {
+            for (var i=0, len=seatsConfig.length; i<len; i++) {
+              var seat = layer.find('#' + seatsConfig[i])[0];
+              seat.setAttr('name', seat.id);
+              seat.setAttr('price', 0);
+              seat.setAttr('color', null);
+              seat.setAttr('fill', 'rgba(' + seatsUnconfigColor + ')');
+              seat.setAttr('sold', false);
+            }
+            if (seatsConfig.length > 0) {
+              var seats = layer.get('.highlight');
+              while (seats.length > 0) {
+                seats[0].remove();
+                seats = layer.get('.highlight');
+              }
+              seatsConfig.length = 0;
+            }
+            layer.batchDraw();
+          });
 
           var isDraggable = false;
           $(document).on('mousedown', function(e){
